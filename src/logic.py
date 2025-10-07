@@ -1,5 +1,7 @@
 """Handles the logic for the board"""
 
+import utils
+
 
 class Logic:
     @staticmethod
@@ -12,11 +14,8 @@ class Logic:
 
         Returns:
             True if the configuration is valid, False otherwise.
-
-        Raises:
-            ValueError: If the value for row is not valid
         """
-        return True
+        return not utils.has_nonzero_duplicate(state[row])
 
     @staticmethod
     def check_col(state: list[list[int]], col: int) -> bool:
@@ -32,7 +31,9 @@ class Logic:
         Raises:
             ValueError: If the value for column is not valid
         """
-        return True
+        vector: list[int] = [state[i][col] for i in range(9)]
+
+        return not utils.has_nonzero_duplicate(vector)
 
     @staticmethod
     def check_sqr(state: list[list[int]], sqr: int) -> bool:
@@ -49,28 +50,32 @@ class Logic:
         Raises:
             ValueError: If the value for row is not valid
         """
-        return True
+        row: int = (sqr // 3) * 3
+        col: int = (sqr % 3) * 3
+
+        vector: list[int] = [
+            state[i][j] for i in range(row, row + 3) for j in range(col, col + 3)
+        ]
+
+        return not utils.has_nonzero_duplicate(vector)
 
     @staticmethod
-    def is_solved(state: list[list[int]]) -> bool:
-        """Checks if the board has been completed
+    def check_board(state: list[list[int]]) -> bool:
+        """Checks if the board is in a valid state
 
         Args:
             state: The board's current configuration
 
         Returns:
-            True if the board is solved, False otherwise.
+            True if the state is valid, False otherwise.
         """
 
-        rows: bool = True
-        cols: bool = True
-        sqrs: bool = True
         for i in range(9):
             if not Logic.check_row(state, i):
-                rows = False
+                return False
             if not Logic.check_col(state, i):
-                cols = False
+                return False
             if not Logic.check_sqr(state, i):
-                sqrs = False
+                return False
 
-        return rows and cols and sqrs
+        return True

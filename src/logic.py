@@ -3,79 +3,77 @@
 import utils
 
 
-class Logic:
-    @staticmethod
-    def check_row(state: list[list[int]], row: int) -> bool:
-        """Checks if a given row configuration is valid
+def check_row(state: list[list[int]], row: int) -> bool:
+    """Checks if a given row configuration is valid
 
-        Args:
-            state: The board's current configuration
-            row: The row to check
+    Args:
+        state: The board's current configuration
+        row: The row to check
 
-        Returns:
-            True if the configuration is valid, False otherwise.
-        """
-        return not utils.has_nonzero_duplicate(state[row])
+    Returns:
+        True if the configuration is valid, False otherwise.
+    """
+    return not utils.has_nonzero_duplicate(state[row])
 
-    @staticmethod
-    def check_col(state: list[list[int]], col: int) -> bool:
-        """Checks if a given column configuration is valid
 
-        Args:
-            state: The board's current configuration
-            col: The column to check
+def check_col(state: list[list[int]], col: int) -> bool:
+    """Checks if a given column configuration is valid
 
-        Returns:
-            True if the configuration is valid, False otherwise.
+    Args:
+        state: The board's current configuration
+        col: The column to check
 
-        Raises:
-            ValueError: If the value for column is not valid
-        """
-        vector: list[int] = [state[i][col] for i in range(9)]
+    Returns:
+        True if the configuration is valid, False otherwise.
 
-        return not utils.has_nonzero_duplicate(vector)
+    Raises:
+        ValueError: If the value for column is not valid
+    """
+    vector: list[int] = [state[i][col] for i in range(9)]
 
-    @staticmethod
-    def check_sqr(state: list[list[int]], sqr: int) -> bool:
-        """Checks if a given square configuration is valid
+    return not utils.has_nonzero_duplicate(vector)
 
-        Args:
-            state: The board's current configuration
-            sqr: The square to check. The squares are numbered
-              as a cellphone numpad.
 
-        Returns:
-            True if the configuration is valid, False otherwise.
+def check_sqr(state: list[list[int]], sqr: int) -> bool:
+    """Checks if a given square configuration is valid
 
-        Raises:
-            ValueError: If the value for row is not valid
-        """
-        row: int = (sqr // 3) * 3
-        col: int = (sqr % 3) * 3
+    Args:
+        state: The board's current configuration
+        sqr: The square to check. The squares are numbered
+          as a cellphone numpad (0-8).
 
-        vector: list[int] = [
-            state[i][j] for i in range(row, row + 3) for j in range(col, col + 3)
-        ]
+    Returns:
+        True if the configuration is valid, False otherwise.
 
-        return not utils.has_nonzero_duplicate(vector)
+    Raises:
+        ValueError: If the value for row is not valid
+    """
+    row: int = (sqr // 3) * 3
+    col: int = (sqr % 3) * 3
 
-    @staticmethod
-    def check_board(state: list[list[int]]) -> bool:
-        """Checks if the board is in a valid state
+    vector: list[int] = [
+        state[i][j] for i in range(row, row + 3) for j in range(col, col + 3)
+    ]
 
-        Args:
-            state: The board's current configuration
+    return not utils.has_nonzero_duplicate(vector)
 
-        Returns:
-            True if the state is valid, False otherwise.
-        """
 
-        for i in range(9):
-            if not Logic.check_row(state, i):
-                return False
-            if not Logic.check_col(state, i):
-                return False
-            if not Logic.check_sqr(state, i):
-                return False
+def check_board(state: list[list[int]]) -> bool:
+    """Checks if the board is in a valid state
 
-        return True
+    Args:
+        state: The board's current configuration
+
+    Returns:
+        True if the state is valid, False otherwise.
+    """
+
+    for i in range(9):
+        if not check_row(state, i):
+            return False
+        if not check_col(state, i):
+            return False
+        if not check_sqr(state, i):
+            return False
+
+    return True

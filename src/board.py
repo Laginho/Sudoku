@@ -1,6 +1,6 @@
 """Handles the board layout"""
 
-from logic import Logic
+import logic
 
 
 class Board:
@@ -22,4 +22,4 @@ class Board:
     def is_solved(self):
         """Checks if the board is in a solved state"""
 
-        return Logic.check_board(self.state) and self.zeroes == 0
+        return logic.check_board(self.state) and self.zeroes == 0

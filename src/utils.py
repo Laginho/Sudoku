@@ -22,3 +22,20 @@ def has_nonzero_duplicate(vector: list[int]) -> bool:
         st.add(item)
 
     return False
+
+
+def count_zeroes(state: list[list[int]]) -> int:
+    """Counts the number of zeroes in the given state
+
+    Args:
+        state: The board's current configuration
+
+    Returns:
+        The number of zeroes
+    """
+    sum: int = 0
+    for i in range(9):
+        for j in range(9):
+            if state[i][j] == 0:
+                sum += 1
+    return sum

@@ -47,11 +47,28 @@ class Board:
         if self.state[row][col] != 0:
             return False
 
-        # TODO: Check if the value is the right one for that cell
-        # something like
-        # if value != right_value:
-        #     return False
-
         self.state[row][col] = value
+
+        if not self.is_valid():
+            self.state[row][col] = 0
+            return False
+
         self.zeroes -= 1
+        return True
+
+    def clear_cell(self, row: int, col: int) -> bool:
+        """Clears a cell on the board.
+
+        Args:
+            row: The row of the cell
+            col: The column of the cell
+
+        Returns:
+            True if the cell was cleared successfully, False otherwise
+        """
+        if self.state[row][col] == 0:
+            return False
+
+        self.state[row][col] = 0
+        self.zeroes += 1
         return True

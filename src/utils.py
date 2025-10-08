@@ -33,9 +33,4 @@ def count_zeroes(state: list[list[int]]) -> int:
     Returns:
         The number of zeroes
     """
-    sum: int = 0
-    for i in range(9):
-        for j in range(9):
-            if state[i][j] == 0:
-                sum += 1
-    return sum
+    return sum(row.count(0) for row in state)

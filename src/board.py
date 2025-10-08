@@ -27,3 +27,31 @@ class Board:
         """Checks if the board is in a solved state"""
 
         return logic.check_board(self.state) and self.zeroes == 0
+
+    def is_valid(self):
+        """Checks if the board is in a valid state"""
+
+        return logic.check_board(self.state)
+
+    def set_cell(self, row: int, col: int, value: int) -> bool:
+        """Sets a cell on the board to a given value.
+
+        Args:
+            row: The row of the cell
+            col: The column of the cell
+            value: The value to set the cell to
+
+        Returns:
+            True if the cell was set successfully, False otherwise
+        """
+        if self.state[row][col] != 0:
+            return False
+
+        # TODO: Check if the value is the right one for that cell
+        # something like
+        # if value != right_value:
+        #     return False
+
+        self.state[row][col] = value
+        self.zeroes -= 1
+        return True

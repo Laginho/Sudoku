@@ -72,3 +72,11 @@ class Board:
         self.state[row][col] = 0
         self.zeroes += 1
         return True
+
+    def __str__(self) -> str:
+        return "\n".join("  ".join(str(x) for x in row) for row in self.state)
+
+
+if __name__ == "__main__":
+    board = Board(utils.EXAMPLE_BOARD)
+    print(board)

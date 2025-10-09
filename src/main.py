@@ -1,7 +1,7 @@
 """Handles the proper game flow"""
 
 from board import Board
-from utils import is_valid
+from utils import is_valid_input
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
         while True:
             entry: list[str] = input("Row Column Value (1-9): ").split(" ")
 
-            if not is_valid(entry):
+            if not is_valid_input(entry):
                 print("Invalid input.")
                 continue
 

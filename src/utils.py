@@ -48,7 +48,7 @@ def count_zeroes(state: list[list[int]]) -> int:
     return sum(row.count(0) for row in state)
 
 
-def is_valid(entry: list[str]) -> bool:
+def is_valid_input(entry: list[str]) -> bool:
     interval = range(1, 10)
     if len(entry) != 3:
         return False

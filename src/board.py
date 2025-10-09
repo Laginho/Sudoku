@@ -74,7 +74,20 @@ class Board:
         return True
 
     def __str__(self) -> str:
-        return "\n".join("  ".join(str(x) for x in row) for row in self.state)
+        board = ""
+        for i in range(9):
+            for j in range(9):
+                if self.state[i][j] == 0:
+                    board += "  "
+                else:
+                    board += f"{self.state[i][j]} "
+                if j in (2, 5):
+                    board += "| "
+            board += "\n"
+            if i in (2, 5):
+                board += "- - - + - - - + - - -\n"
+
+        return board
 
 
 if __name__ == "__main__":

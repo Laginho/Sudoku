@@ -46,3 +46,20 @@ def count_zeroes(state: list[list[int]]) -> int:
         The number of zeroes
     """
     return sum(row.count(0) for row in state)
+
+
+def is_valid(entry: list[str]) -> bool:
+    interval = range(1, 10)
+    if len(entry) != 3:
+        return False
+    if not all(entry[i].isdigit() for i in range(3)):
+        return False
+
+    row: int = int(entry[0])
+    col: int = int(entry[1])
+    val: int = int(entry[2])
+
+    if any(item not in interval for item in [row, col, val]):
+        return False
+
+    return True

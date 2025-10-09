@@ -6,24 +6,14 @@
 
 import unittest
 
+from utils import EXAMPLE_BOARD
 from board import Board
 
 
 class TestBoard(unittest.TestCase):
 
     def setUp(self):
-        initial_state = [
-            [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            [4, 5, 6, 7, 8, 9, 1, 2, 3],
-            [7, 8, 9, 1, 2, 3, 4, 5, 6],
-            [2, 3, 4, 0, 6, 7, 8, 9, 1],
-            [5, 6, 7, 8, 9, 1, 2, 3, 4],
-            [8, 9, 1, 2, 3, 4, 5, 6, 7],
-            [3, 4, 5, 6, 7, 8, 9, 0, 2],
-            [6, 7, 8, 9, 1, 2, 3, 4, 5],
-            [9, 1, 2, 3, 4, 5, 6, 7, 8],
-        ]
-        self.board = Board(initial_state)
+        self.board = Board(EXAMPLE_BOARD)
 
     def test_set_cell_valid_move(self):
         self.assertTrue(

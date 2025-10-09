@@ -8,4 +8,6 @@ src/sudoku.egg-info/PKG-INFO
 src/sudoku.egg-info/SOURCES.txt
 src/sudoku.egg-info/dependency_links.txt
 src/sudoku.egg-info/top_level.txt
+test/test_board.py
 test/test_logic.py
+test/test_utils.py

@@ -1,17 +1,27 @@
+# type: ignore
+
+"""The main application class, which handles the Kivy integration
+
+The UI is made in the sudoku.kv file, so this file is just a wrapper.
+"""
+
 from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
 
 
-class MyApp(App):
-    def build(self):
-        return BoxLayout(orientation="vertical")
+class SudokuGrid(GridLayout):
+    pass
 
+
+class SudokuApp(App):
     def on_start(self):
-        self.root.add_widget(Label(text="Hello, world!"))
-        self.root.add_widget(Button(text="Click me!"))
+        sudoku_grid = self.root.ids.sudoku_grid
+        for i in range(9):
+            for j in range(9):
+                cell = Button(text=f"{i},{j}")
+                sudoku_grid.add_widget(cell)
 
 
 if __name__ == "__main__":
-    MyApp().run()
+    SudokuApp().run()

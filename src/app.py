@@ -18,16 +18,29 @@ class SudokuGrid(GridLayout):
 
 class SudokuApp(App):
     def build(self):
-
-        self.board = Board(EXAMPLE_BOARD)
+        self.board: Board = Board(EXAMPLE_BOARD)
+        self.cells: list[list[Button]] = [
+            [Button() for _ in range(9)] for _ in range(9)
+        ]
 
         sudoku_grid = self.root.ids.sudoku_grid
         for i in range(9):
             for j in range(9):
-                number = self.board.state[i][j]
-                num_text = str(number) if number != 0 else ""
-                cell = Button(text=num_text)
-                sudoku_grid.add_widget(cell)
+                number: int = self.board.state[i][j]
+                num_text: str = str(number) if number != 0 else ""
+
+                button: Button = self.cells[i][j]
+                button.text: str = num_text
+                button.pos_hint: dict[str, int] = {"row": i, "col": j}
+                button.bind(on_press=self.on_cell_press)
+                sudoku_grid.add_widget(button)
+
+    def on_cell_press(self, button: Button) -> None:
+        row: int = int(button.pos_hint["row"])
+        col: int = int(button.pos_hint["col"])
+        # if self.board.clear_cell(row, col):
+        #     button.text = ""
+        #     print(self.board)
 
 
 if __name__ == "__main__":

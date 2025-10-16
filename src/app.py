@@ -14,7 +14,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from copy import deepcopy as copy
 
 from board import Board
-from utils import EXAMPLE_BOARD, EMPTY_BOARD, WINDOW_SIZE
+from utils import EXAMPLE_BOARD, WINDOW_SIZE
 from utils import Colors as c
 
 Window.size = WINDOW_SIZE
@@ -46,10 +46,9 @@ class SudokuApp(App):
     def game_start(self):
         self.board = Board(copy(EXAMPLE_BOARD))
         self.cells = [[Button() for _ in range(9)] for _ in range(9)]
+        self.initial_cells = []
         self.selected_button: Button | None = None
         self.selected_grid: tuple[int, int] = (-1, -1)
-
-        print(f"starting game with board:\n{self.board}")
 
         sudoku_grid = self.sm.get_screen("game").ids.sudoku_grid
         sudoku_grid.clear_widgets()
@@ -59,6 +58,7 @@ class SudokuApp(App):
                 button = self.cells[i][j]
 
                 if number != 0:
+                    self.initial_cells.append((i, j))
                     num_text = str(number)
                     button.background_color = c.GRAY
                 else:
@@ -76,6 +76,9 @@ class SudokuApp(App):
             number_button = Button(text=str(i))
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
+        clear_button = Button(text="Clear")
+        clear_button.bind(on_press=self.on_number_press)
+        number_palette.add_widget(clear_button)
 
     def on_cell_press(self, button: Button):
         row = int(button.pos_hint["row"])
@@ -86,7 +89,7 @@ class SudokuApp(App):
                 c.GRAY if self.selected_button.text != "" else c.WHITE
             )
 
-        if button.text != "":
+        if (row, col) in self.initial_cells:
             self.selected_grid = (-1, -1)
             self.selected_button = None
             return
@@ -100,16 +103,22 @@ class SudokuApp(App):
             return
 
         row, col = self.selected_grid
-        number_to_set = int(button.text)
+        number_to_set = int(button.text) if button.text != "Clear" else 0
 
-        if self.board.set_cell(row, col, number_to_set):
+        if number_to_set == 0:
+            self.board.clear_cell(row, col)
+            self.selected_button.text = ""
+            self.selected_button.background_color = c.WHITE
+
+        elif self.board.set_cell(row, col, number_to_set):
+            self.selected_button.background_color = c.GRAY
             self.selected_button.text = str(number_to_set)
             if self.board.is_solved():
                 self.show_win_popup()
         else:
             print("Invalid move.")
+            return
 
-        self.selected_button.background_color = c.GRAY
         self.selected_grid = (-1, -1)
         self.selected_button = None
 
@@ -119,17 +128,10 @@ class SudokuApp(App):
         pop = WinPopup()
         pop.open()
 
-    # def game_restart(self):
-    #     """Resets the game."""
-
-    #     self.game_start()
-    #     print(self.board.state)
-
     def quit(self):
         """Goes back to the Main Menu."""
 
         self.sm.current = "menu"
-        print(self.board)
 
 
 if __name__ == "__main__":

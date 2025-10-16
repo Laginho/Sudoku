@@ -2,6 +2,17 @@
     cols: 9
     rows: 9
 
+<WinPopup@BoxLayout>:
+    orientation: "vertical"
+    
+    Label:
+        text: "You won!"
+    Label:
+        text: ""
+    Button:
+        text: "Exit"
+        on_press: exit()
+
 FloatLayout:
     SudokuGrid:
         id: sudoku_grid

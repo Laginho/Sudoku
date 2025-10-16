@@ -46,7 +46,7 @@ class SudokuApp(App):
     def game_start(self):
         self.board = Board(copy(EXAMPLE_BOARD))
         self.cells = [[Button() for _ in range(9)] for _ in range(9)]
-        self.initial_cells = []
+        self.board.initial_cells = []
         self.selected_button: Button | None = None
         self.selected_grid: tuple[int, int] = (-1, -1)
 
@@ -58,7 +58,7 @@ class SudokuApp(App):
                 button = self.cells[i][j]
 
                 if number != 0:
-                    self.initial_cells.append((i, j))
+                    self.board.initial_cells.append((i, j))
                     num_text = str(number)
                     button.background_color = c.GRAY
                 else:
@@ -89,7 +89,7 @@ class SudokuApp(App):
                 c.GRAY if self.selected_button.text != "" else c.WHITE
             )
 
-        if (row, col) in self.initial_cells:
+        if (row, col) in self.board.initial_cells:
             self.selected_grid = (-1, -1)
             self.selected_button = None
             return

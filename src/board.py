@@ -16,6 +16,8 @@ class Board:
     """
 
     def __init__(self, initial_state: list[list[int]] | None = None):
+        self.initial_cells: list[tuple[int, int]] = []
+
         if initial_state is not None:
             self.state: list[list[int]] = initial_state
             self.zeroes: int = utils.count_zeroes(self.state)

@@ -2,27 +2,81 @@
     cols: 9
     rows: 9
 
-<WinPopup@BoxLayout>:
-    orientation: "vertical"
-    
-    Label:
-        text: "You won!"
-    Label:
-        text: ""
-    Button:
-        text: "Exit"
-        on_press: exit()
+<GameScreen@Screen>:
+    FloatLayout:
+        SudokuGrid:
+            id: sudoku_grid
+            size_hint: 0.9, 0.7
+            pos_hint: {'center_x': 0.5, 'top': 0.95}
 
-FloatLayout:
-    SudokuGrid:
-        id: sudoku_grid
-        size_hint: 0.9, 0.7
-        pos_hint: {'center_x': 0.5, 'top': 0.95}
+        BoxLayout:
+            id: number_palette
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: '48dp'
+            pos_hint: {'center_x': 0.5, 'y': 0.05}
+            spacing: '5dp'
+
+<WinPopup@Popup>:
+    title: ''
+    auto_dismiss: False
+    size_hint: 0.5, 0.5
 
     BoxLayout:
-        id: number_palette
-        orientation: 'horizontal'
-        size_hint_y: None
-        height: '48dp'
-        pos_hint: {'center_x': 0.5, 'y': 0.05}
-        spacing: '5dp'
+        orientation: 'vertical'
+        spacing: '10dp'
+        padding: '10dp'
+
+        Label:
+            text: 'You Won!'
+            font_size: '24sp'
+
+        Label:
+            text: ''
+            font_size: '24sp'
+
+        Button:
+            text: 'Play Again'
+            on_press:
+                root.dismiss()
+                app.quit() # TODO: app.game_restart()
+
+        Button:
+            text: 'Exit'
+            on_press:
+                root.dismiss() 
+                app.quit()
+
+<MenuScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: '10dp'
+        padding: '50dp'
+
+        Label:
+            text: "Sudoku"
+            font_size: '48sp'
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: '10dp'
+            size_hint_y: None
+            height: '48dp'
+
+            Button:
+                text: "Play"
+                on_press: 
+                    app.root.current = 'game'
+                    app.game_start()
+
+            Button:
+                text: "Exit"
+                on_press: app.stop()
+
+ScreenManager:
+    MenuScreen:
+        name: 'menu'
+    GameScreen:
+        name: 'game'

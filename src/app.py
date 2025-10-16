@@ -7,84 +7,129 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen
+
+from copy import deepcopy as copy
 
 from board import Board
-from utils import EXAMPLE_BOARD
-from utils import WINDOW_SIZE
+from utils import EXAMPLE_BOARD, EMPTY_BOARD, WINDOW_SIZE
+from utils import Colors as c
 
 Window.size = WINDOW_SIZE
+
+
+class GameScreen(Screen):
+    pass
+
+
+class MenuScreen(Screen):
+    pass
 
 
 class SudokuGrid(GridLayout):
     pass
 
 
-class WinPopup(BoxLayout):
+class WinPopup(Popup):
     pass
 
 
 class SudokuApp(App):
     def build(self):
-        self.board = Board(EXAMPLE_BOARD)
-        self.cells = [[Button() for _ in range(9)] for _ in range(9)]
-        self.selected_grid: tuple[int, int] = (-1, -1)
-        self.selected_button: Button | None = None
+        self.sm = ScreenManager()
+        self.sm.add_widget(MenuScreen(name="menu"))
+        self.sm.add_widget(GameScreen(name="game"))
+        return self.sm
 
-    def on_start(self):
-        sudoku_grid = self.root.ids.sudoku_grid
+    def game_start(self):
+        self.board = Board(copy(EXAMPLE_BOARD))
+        self.cells = [[Button() for _ in range(9)] for _ in range(9)]
+        self.selected_button: Button | None = None
+        self.selected_grid: tuple[int, int] = (-1, -1)
+
+        print(f"starting game with board:\n{self.board}")
+
+        sudoku_grid = self.sm.get_screen("game").ids.sudoku_grid
+        sudoku_grid.clear_widgets()
         for i in range(9):
             for j in range(9):
                 number = self.board.state[i][j]
-                num_text = str(number) if number != 0 else ""
-
                 button = self.cells[i][j]
+
+                if number != 0:
+                    num_text = str(number)
+                    button.background_color = c.GRAY
+                else:
+                    num_text = ""
+
                 button.text = num_text
                 button.pos_hint = {"row": i, "col": j}
                 button.bind(on_press=self.on_cell_press)
+
                 sudoku_grid.add_widget(button)
 
-        number_palette = self.root.ids.number_palette
+        number_palette = self.sm.get_screen("game").ids.number_palette
+        number_palette.clear_widgets()
         for i in range(1, 10):
             number_button = Button(text=str(i))
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
 
-        self.show_win()
-
     def on_cell_press(self, button: Button):
         row = int(button.pos_hint["row"])
         col = int(button.pos_hint["col"])
 
+        if self.selected_button:
+            self.selected_button.background_color = (
+                c.GRAY if self.selected_button.text != "" else c.WHITE
+            )
+
+        if button.text != "":
+            self.selected_grid = (-1, -1)
+            self.selected_button = None
+            return
+
         self.selected_grid = (row, col)
-
-        if isinstance(self.selected_button, Button):
-            self.selected_button.background_color = (1, 1, 1, 1)
-
         self.selected_button = button
-        button.background_color = (0.5, 0.5, 1, 1)
-
-        print(f"Selected ({row}, {col}).")
+        button.background_color = c.SELECTED
 
     def on_number_press(self, button: Button):
-        if self.selected_grid != (-1, -1):
-            row, col = self.selected_grid
-            if not self.board.set_cell(row, col, int(button.text)):
-                print("Invalid move.")
-            else:
-                print(f"Set ({row}, {col}) to {button.text}.")
-                self.cells[row][col].text = button.text
+        if self.selected_grid == (-1, -1) or not self.selected_button:
+            return
 
-            self.selected_button.background_color = (1, 1, 1, 1)
-            self.selected_button = None
+        row, col = self.selected_grid
+        number_to_set = int(button.text)
 
+        if self.board.set_cell(row, col, number_to_set):
+            self.selected_button.text = str(number_to_set)
             if self.board.is_solved():
-                self.show_win()
+                self.show_win_popup()
+        else:
+            print("Invalid move.")
 
-    def show_win(self):
-        """Shows a popup message saying that the player has won."""
-        popup = Popup(title="", content=WinPopup(), size_hint=(0.5, 0.5))
-        popup.open()
+        self.selected_button.background_color = c.GRAY
+        self.selected_grid = (-1, -1)
+        self.selected_button = None
+
+    def show_win_popup(self):
+        """Finds the popup in the kv file and opens it."""
+
+        pop = WinPopup()
+        pop.open()
+
+    # def game_restart(self):
+    #     """Resets the game."""
+
+    #     self.game_start()
+    #     print(self.board.state)
+
+    def quit(self):
+        """Goes back to the Main Menu."""
+
+        self.sm.current = "menu"
+        print(self.board)
 
 
 if __name__ == "__main__":

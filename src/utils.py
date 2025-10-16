@@ -1,5 +1,7 @@
 """General utility constants and functions"""
 
+from dataclasses import dataclass
+
 WINDOW_SIZE: tuple[int, int] = (405, 720)
 
 EXAMPLE_BOARD: list[list[int]] = [
@@ -65,3 +67,18 @@ def is_valid_input(entry: list[str]) -> bool:
         return False
 
     return True
+
+
+@dataclass
+class Colors:
+    """Color constants"""
+
+    RED: tuple[float, float, float, float] = (1, 0, 0, 1)
+    GREEN: tuple[float, float, float, float] = (0, 1, 0, 1)
+    BLUE: tuple[float, float, float, float] = (0, 0, 1, 1)
+    YELLOW: tuple[float, float, float, float] = (1, 1, 0, 1)
+    WHITE: tuple[float, float, float, float] = (1, 1, 1, 1)
+    BLACK: tuple[float, float, float, float] = (0, 0, 0, 1)
+    GRAY: tuple[float, float, float, float] = (0.5, 0.5, 0.5, 1)
+    DGRAY: tuple[float, float, float, float] = (0.2, 0.2, 0.2, 1)
+    SELECTED: tuple[float, float, float, float] = (0.6, 0.6, 1, 0.6)

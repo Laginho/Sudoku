@@ -63,3 +63,11 @@ def add_puzzles(db_name: str = "sudoku_puzzles.db") -> None:
 
     for puzzle_str, difficulty in puzzles:
         execute_command(sql, puzzle_str, difficulty)
+
+
+# def load_puzzle(difficulty: str = "easy", db_name: str = "sudoku_puzzles.db") -> str:
+#     sql: str = """
+#         SELECT puzzle_string FROM puzzles WHERE difficulty = ?
+#         ORDER BY RANDOM() LIMIT 1
+#         """
+#     result = None

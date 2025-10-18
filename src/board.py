@@ -1,10 +1,7 @@
 """Handles the board layout"""
 
-from kivy.uix.button import Button
-
 import logic
 import utils
-import db_utils
 
 
 class Board:
@@ -20,9 +17,6 @@ class Board:
 
     def __init__(self, initial_state: list[list[int]] | None = None):
         self.initial_cells: set[tuple[int, int]] = set()
-        self.cells: list[list[Button]] = [
-            [Button() for _ in range(9)] for _ in range(9)
-        ]
 
         if initial_state is not None:
             self.state: list[list[int]] = initial_state
@@ -30,9 +24,6 @@ class Board:
         else:
             self.state: list[list[int]] = [[0 for _ in range(9)] for _ in range(9)]
             self.zeroes: int = 81
-
-        db_utils.setup_database()
-        db_utils.add_puzzles()
 
     def is_solved(self):
         """Checks if the board is in a solved state"""

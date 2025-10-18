@@ -16,6 +16,7 @@ from copy import deepcopy as copy
 from board import Board
 from utils import EXAMPLE_BOARD, WINDOW_SIZE
 from utils import Colors as c
+import db_utils
 
 Window.size = WINDOW_SIZE
 
@@ -41,19 +42,24 @@ class SudokuApp(App):
         self.sm = ScreenManager()
         self.sm.add_widget(MenuScreen(name="menu"))
         self.sm.add_widget(GameScreen(name="game"))
+        db_utils.setup_database()
+        db_utils.add_puzzles()
         return self.sm
 
     def game_start(self):
         self.board = Board(copy(EXAMPLE_BOARD))
         self.selected_grid: tuple[int, int] = (-1, -1)
         self.selected_button: Button | None = None
+        self.cells: list[list[Button]] = [
+            [Button() for _ in range(9)] for _ in range(9)
+        ]
 
         sudoku_grid = self.sm.get_screen("game").ids.sudoku_grid
         sudoku_grid.clear_widgets()
         for i in range(9):
             for j in range(9):
                 number = self.board.state[i][j]
-                button = self.board.cells[i][j]
+                button = self.cells[i][j]
 
                 if number != 0:
                     self.board.initial_cells.append((i, j))

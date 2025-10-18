@@ -2,6 +2,8 @@
 
 import sqlite3
 
+from utils import parse_puzzle_string
+
 DB_NAME: str = "sudoku_puzzles.db"
 
 
@@ -90,38 +92,9 @@ def add_puzzles(db_name: str = DB_NAME) -> None:
         print(f"Database error adding puzzles: {e}")
 
 
-def parse_puzzle_string(puzzle_str: str) -> list[list[int]] | None:
-    """Converts an 81-character string into a 9x9 matrix of integers.
-
-    Args:
-        puzzle_str: The 81-character string representing the puzzle
-                    (0-9, where 0 is an empty cell).
-
-    Returns:
-        A 9x9 list of lists of integers, or None if the input string is invalid
-        (wrong length or contains non-digits).
-    """
-
-    if len(puzzle_str) != 81 or not puzzle_str.isdigit():
-        return None
-
-    grid: list[list[int]] = []
-
-    try:
-        for i in range(9):
-            row_str = puzzle_str[i * 9 : (i + 1) * 9]
-            row = [int(char) for char in row_str]
-            grid.append(row)
-
-        return grid
-
-    except ValueError:
-        return None
-
-
 def load_puzzle_from_db(
     difficulty: str = "easy", db_name: str = DB_NAME
-) -> list[list[int]] | None:
+) -> list[list[int]]:
     """Loads a random puzzle from the database with the specified difficulty.
 
     Args:
@@ -131,8 +104,8 @@ def load_puzzle_from_db(
         db_name (str): The name of the database file. Defaults to DB_NAME.
 
     Returns:
-        A 9x9 list of lists representing the puzzle or None if no valid puzzle
-        is found for the difficulty.
+        A 9x9 list of lists representing the puzzle or an empty 2d list
+        if no valid puzzle is found for the difficulty.
 
     Raises:
         sqlite3.Error: If a database operation fails during the query process.
@@ -142,7 +115,7 @@ def load_puzzle_from_db(
         SELECT puzzle_string FROM puzzles 
         WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1
         """
-    puzzle_grid = None
+    puzzle_grid = [[]]
 
     try:
         with sqlite3.connect(db_name) as conn:
@@ -152,7 +125,7 @@ def load_puzzle_from_db(
 
             if result:
                 puzzle_str = result[0]
-                puzzle_grid = parse_puzzle_string(puzzle_str)
+                puzzle_grid: list[list[int]] = parse_puzzle_string(puzzle_str)
 
     except sqlite3.Error as e:
         print(f"Database error loading puzzle: {e}")

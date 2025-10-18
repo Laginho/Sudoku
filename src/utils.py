@@ -83,6 +83,35 @@ def is_valid_input(entry: list[str]) -> bool:
     return True
 
 
+def parse_puzzle_string(puzzle_str: str) -> list[list[int]]:
+    """Converts an 81-character string into a 9x9 matrix of integers.
+
+    Args:
+        puzzle_str: The 81-character string representing the puzzle
+                    (0-9, where 0 is an empty cell).
+
+    Returns:
+        A 9x9 list of lists of integers, or an empty 2d list if the input
+        string is invalid (wrong length or contains non-digits).
+    """
+
+    if len(puzzle_str) != 81 or not puzzle_str.isdigit():
+        return [[]]
+
+    grid: list[list[int]] = []
+
+    try:
+        for i in range(9):
+            row_str = puzzle_str[i * 9 : (i + 1) * 9]
+            row = [int(char) for char in row_str]
+            grid.append(row)
+
+        return grid
+
+    except ValueError:
+        return [[]]
+
+
 @dataclass
 class Colors:
     """Color constants"""

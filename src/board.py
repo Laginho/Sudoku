@@ -51,6 +51,9 @@ class Board:
         Returns:
             True if the cell was set successfully, False otherwise
         """
+        if (row, col) in self.initial_cells:
+            return False
+
         if self.state[row][col] != 0:
             return False
 
@@ -73,6 +76,9 @@ class Board:
         Returns:
             True if the cell was cleared successfully, False otherwise
         """
+        if (row, col) in self.initial_cells:
+            return False
+
         if self.state[row][col] == 0:
             return False
 

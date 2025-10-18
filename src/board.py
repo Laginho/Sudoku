@@ -1,5 +1,7 @@
 """Handles the board layout"""
 
+from kivy.uix.button import Button
+
 import logic
 import utils
 
@@ -16,7 +18,10 @@ class Board:
     """
 
     def __init__(self, initial_state: list[list[int]] | None = None):
-        self.initial_cells: list[tuple[int, int]] = []
+        self.initial_cells: set[tuple[int, int]] = set()
+        self.cells: list[list[Button]] = [
+            [Button() for _ in range(9)] for _ in range(9)
+        ]
 
         if initial_state is not None:
             self.state: list[list[int]] = initial_state

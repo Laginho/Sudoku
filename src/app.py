@@ -45,17 +45,15 @@ class SudokuApp(App):
 
     def game_start(self):
         self.board = Board(copy(EXAMPLE_BOARD))
-        self.cells = [[Button() for _ in range(9)] for _ in range(9)]
-        self.board.initial_cells = []
-        self.selected_button: Button | None = None
         self.selected_grid: tuple[int, int] = (-1, -1)
+        self.selected_button: Button | None = None
 
         sudoku_grid = self.sm.get_screen("game").ids.sudoku_grid
         sudoku_grid.clear_widgets()
         for i in range(9):
             for j in range(9):
                 number = self.board.state[i][j]
-                button = self.cells[i][j]
+                button = self.board.cells[i][j]
 
                 if number != 0:
                     self.board.initial_cells.append((i, j))

@@ -1,11 +1,16 @@
 import sqlite3
 
 
-def execute_command(command: str, db_name: str = "sudoku_puzzles.db") -> None:
+def execute_command(
+    command: str,
+    arg1: str | None = None,
+    arg2: str | None = None,
+    db_name: str = "sudoku_puzzles.db",
+) -> None:
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
-    cursor.execute(command)
+    cursor.execute(command, (arg1, arg2))
 
     conn.commit()
     conn.close()
@@ -51,8 +56,10 @@ def add_puzzles(db_name: str = "sudoku_puzzles.db") -> None:
         ),
     ]
 
-    for puzzle in puzzles:
-        execute_command(
-            f"INSERT OR IGNORE INTO puzzles (puzzle_string, difficulty) \
-            VALUES ('{puzzle[0]}', '{puzzle[1]}');"
-        )
+    sql: str = """
+        INSERT OR IGNORE INTO puzzles (puzzle_string, difficulty) 
+        VALUES (?, ?); 
+        """
+
+    for puzzle_str, difficulty in puzzles:
+        execute_command(sql, puzzle_str, difficulty)

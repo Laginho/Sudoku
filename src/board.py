@@ -32,6 +32,7 @@ class Board:
             self.zeroes: int = 81
 
         db_utils.setup_database()
+        db_utils.add_puzzles()
 
     def is_solved(self):
         """Checks if the board is in a solved state"""

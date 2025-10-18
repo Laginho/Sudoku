@@ -20,7 +20,7 @@ EXAMPLE_BOARD: list[list[int]] = [
 def has_nonzero_duplicate(vector: list[int]) -> bool:
     """Checks if a list contains duplicates of non zero values
 
-    [0, 0, 3, 4, 5, 0, 3, 2, 1, 0, 0] -> True
+    [0, 0, 3, 4, 5, 0, 3, 2, 1, 0, 0] -> True (list[2] == list[6] == 3)
 
     [0, 0, 3, 4, 5, 0, 6, 2, 1, 0, 0] -> False
 
@@ -30,12 +30,13 @@ def has_nonzero_duplicate(vector: list[int]) -> bool:
     Returns:
         True if the list contains duplicates, False otherwise
     """
-    st: set[int] = set()
+    counted_elements: set[int] = set()
 
-    for item in vector:
-        if item != 0 and item in st:
+    for element in vector:
+        if element in counted_elements and element != 0:
             return True
-        st.add(item)
+
+        counted_elements.add(element)
 
     return False
 
@@ -53,6 +54,19 @@ def count_zeroes(state: list[list[int]]) -> int:
 
 
 def is_valid_input(entry: list[str]) -> bool:
+    """Checks if the raw string input from the terminal is a valid move format
+
+    Expects exactly three elements (row, column, value), all of which must be
+    digits between 1 and 9 (inclusive).
+
+    Args:
+        entry: A list of string segments from the user input
+        (e.g., ['3', '4', '5'])
+
+    Returns:
+        bool: True if the input is valid, False otherwise
+    """
+
     interval = range(1, 10)
     if len(entry) != 3:
         return False

@@ -1,6 +1,10 @@
 # type: ignore
 
-"""The main application class, which handles the Kivy integration."""
+"""The main application class, which handles the Kivy layout.
+
+It consists of a main SudokuApp class, which will be the actual app.
+The other classes are just boilerplate for the sudoku.kv file to work.
+"""
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -38,7 +42,38 @@ class WinPopup(Popup):
 
 
 class SudokuApp(App):
+    """The main application.
+
+    This class manages the overall flow and UI of the Sudoku game,
+    including screen transitions, puzzle loading, board setup, user
+    input handling and game completion feedback.
+
+    Attributes:
+        sm (ScreenManager):
+            Manages different screens in the application.
+
+        board (Board):
+            Represents the current game board object and its state.
+
+        selected_grid (tuple[int, int]):
+            Coordinates of the currently selected cell.
+
+        selected_button (Button | None):
+            Reference to the currently selected button in the grid.
+
+        cells (list[list[Button]]):
+            2D list of buttons representing the Sudoku grid.
+    """
+
     def build(self):
+        """Initializes the application.
+
+        The database is set up and puzzles are added.
+
+        Returns:
+            ScreenManager: The root widget of the application.
+        """
+
         self.sm = ScreenManager()
         self.sm.add_widget(MenuScreen(name="menu"))
         self.sm.add_widget(GameScreen(name="game"))
@@ -47,6 +82,13 @@ class SudokuApp(App):
         return self.sm
 
     def game_start(self):
+        """Loads a new puzzle.
+
+        The grid is populated with buttons corresponding to
+        the puzzle state, marks initial cells as uneditable, and sets up the
+        number palette.
+        """
+
         puzzle_grid = db_utils.load_puzzle_from_db()
 
         if not puzzle_grid:
@@ -91,6 +133,12 @@ class SudokuApp(App):
         number_palette.add_widget(clear_button)
 
     def on_cell_press(self, button: Button):
+        """Handles the pressing of a cell button on the Sudoku grid.
+
+        Args:
+            button: The Kivy button instance that was pressed.
+        """
+
         row = int(button.pos_hint["row"])
         col = int(button.pos_hint["col"])
 
@@ -109,6 +157,12 @@ class SudokuApp(App):
         button.background_color = c.SELECTED
 
     def on_number_press(self, button: Button):
+        """Handles the pressing of a number button in the palette.
+
+        Args:
+            button: The Kivy button instance that was pressed.
+        """
+
         if self.selected_grid == (-1, -1) or not self.selected_button:
             return
 

@@ -5,6 +5,12 @@ from utils import is_valid_input
 
 
 def main():
+    """The main loop for the terminal version of the game.
+
+    On each move, the user gives an input of row, column, and value. Then,
+    the move is validated, and the board is printed to the console.
+    """
+
     board = Board()
 
     while not board.is_solved():

@@ -1,10 +1,22 @@
+"""Functions for working with the SQLite database."""
+
 import sqlite3
 
 DB_NAME: str = "sudoku_puzzles.db"
 
 
 def setup_database(db_name: str = DB_NAME) -> None:
-    """Creates the puzzles table if it doesn't exist."""
+    """Creates the table in the database if it doesn't already exist.
+
+    It's kind of overkill for this game, but it is more of an excuse for
+    learning SQLite and its practical implementations.
+
+    Args:
+        db_name: The name of the database file. Defaults to DB_NAME.
+
+    Raises:
+        sqlite3.Error: If a database operation fails during the table creation.
+    """
 
     sql = """
         CREATE TABLE IF NOT EXISTS puzzles (
@@ -23,7 +35,17 @@ def setup_database(db_name: str = DB_NAME) -> None:
 
 
 def add_puzzles(db_name: str = DB_NAME) -> None:
-    """Adds a predefined list of puzzles to the database, ignoring duplicates."""
+    """Adds a predefined list of Sudoku puzzles to the database
+
+    Honorable mention to INSERT OR IGNORE, meaning puzzles that already exist
+    will not be re-inserted.
+
+    Args:
+        db_name (str): The name of the database file. Defaults to DB_NAME.
+
+    Raises:
+        sqlite3.Error: If a database operation fails during the insertion process.
+    """
 
     puzzles: list[tuple[str, str]] = [
         (
@@ -69,7 +91,16 @@ def add_puzzles(db_name: str = DB_NAME) -> None:
 
 
 def parse_puzzle_string(puzzle_str: str) -> list[list[int]] | None:
-    """Converts an 81-character string into a 9x9 grid."""
+    """Converts an 81-character string into a 9x9 matrix of integers.
+
+    Args:
+        puzzle_str: The 81-character string representing the puzzle
+                    (0-9, where 0 is an empty cell).
+
+    Returns:
+        A 9x9 list of lists of integers, or None if the input string is invalid
+        (wrong length or contains non-digits).
+    """
 
     if len(puzzle_str) != 81 or not puzzle_str.isdigit():
         return None
@@ -91,7 +122,21 @@ def parse_puzzle_string(puzzle_str: str) -> list[list[int]] | None:
 def load_puzzle_from_db(
     difficulty: str = "easy", db_name: str = DB_NAME
 ) -> list[list[int]] | None:
-    """Loads a random puzzle string of a given difficulty and parses it."""
+    """Loads a random puzzle from the database with the specified difficulty.
+
+    Args:
+        difficulty (str): The difficulty level to filter by
+                          (e.g., 'easy', 'medium'). Defaults to 'easy'.
+
+        db_name (str): The name of the database file. Defaults to DB_NAME.
+
+    Returns:
+        A 9x9 list of lists representing the puzzle or None if no valid puzzle
+        is found for the difficulty.
+
+    Raises:
+        sqlite3.Error: If a database operation fails during the query process.
+    """
 
     sql: str = """
         SELECT puzzle_string FROM puzzles 

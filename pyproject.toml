@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sudoku"
-version = "0.2"
+version = "0.4"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

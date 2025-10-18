@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 
 import logic
 import utils
+import db_utils
 
 
 class Board:
@@ -29,6 +30,8 @@ class Board:
         else:
             self.state: list[list[int]] = [[0 for _ in range(9)] for _ in range(9)]
             self.zeroes: int = 81
+
+        db_utils.setup_database()
 
     def is_solved(self):
         """Checks if the board is in a solved state"""

@@ -47,7 +47,13 @@ class SudokuApp(App):
         return self.sm
 
     def game_start(self):
-        self.board = Board(copy(EXAMPLE_BOARD))
+        puzzle_grid = db_utils.load_puzzle_from_db()
+
+        if not puzzle_grid:
+            print("could not find a puzzle to load.")
+            puzzle_grid = copy(EXAMPLE_BOARD)
+
+        self.board = Board(puzzle_grid)
         self.selected_grid: tuple[int, int] = (-1, -1)
         self.selected_button: Button | None = None
         self.cells: list[list[Button]] = [
@@ -62,7 +68,7 @@ class SudokuApp(App):
                 button = self.cells[i][j]
 
                 if number != 0:
-                    self.board.initial_cells.append((i, j))
+                    self.board.initial_cells.add((i, j))
                     num_text = str(number)
                     button.background_color = c.GRAY
                 else:

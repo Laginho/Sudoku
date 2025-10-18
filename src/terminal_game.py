@@ -1,4 +1,4 @@
-"""Handles the proper game flow"""
+"""Interface for playing the game in the terminal."""
 
 from board import Board
 from utils import is_valid_input

@@ -3,13 +3,11 @@
 - setup_database
 - add_puzzles
 - load_puzzle_from_db
-
-TODO: this files' tests are broken and will fail everytime.
 """
 
 import unittest
 import sqlite3
-import os
+
 from db_utils import (
     setup_database,
     add_puzzles,
@@ -22,19 +20,12 @@ class TestDbUtils(unittest.TestCase):
     test_db_name: str = "test_puzzles.db"
 
     def setUp(self) -> None:
-        # We only want to ensure the file doesn't exist from a previous failed run
-        if os.path.exists(self.test_db_name):
-            os.remove(self.test_db_name)
-        # We don't connect here anymore, just set up the initial file and table
         setup_database(db_name=self.test_db_name)
 
     def tearDown(self) -> None:
-        # Now we only need to delete the file. No connection needs to be closed.
-        if os.path.exists(self.test_db_name):
-            os.remove(self.test_db_name)
+        pass
 
     def test_setup_database(self) -> None:
-        # We connect only when needed, inside the test, and close immediately
         with sqlite3.connect(self.test_db_name) as conn:
             cursor = conn.cursor()
             cursor.execute(

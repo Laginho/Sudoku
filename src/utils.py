@@ -16,6 +16,8 @@ EXAMPLE_BOARD: list[list[int]] = [
     [9, 1, 2, 3, 4, 5, 6, 7, 8],
 ]
 
+TEST_BOARD = EXAMPLE_BOARD
+
 
 def has_nonzero_duplicate(vector: list[int]) -> bool:
     """Checks if a list contains duplicates of non zero values
@@ -51,6 +53,17 @@ def count_zeroes(state: list[list[int]]) -> int:
         The number of zeroes
     """
     return sum(row.count(0) for row in state)
+
+
+def get_initial_cells(state: list[list[int]]) -> set[tuple[int, int]]:
+    initial_cells: set[tuple[int, int]] = set()
+
+    for row in range(9):
+        for col in range(9):
+            if state[row][col] != 0:
+                initial_cells.add((row, col))
+
+    return initial_cells
 
 
 def is_valid_input(entry: list[str]) -> bool:

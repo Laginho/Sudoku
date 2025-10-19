@@ -12,8 +12,11 @@ class Board:
 
     Attributes:
         state: The board's current configuration
+
         zeroes: The number of zeroes in the board
-        initial_cells: A set of tuples representing the fixed starting cells
+
+        initial_cells: A set of tuples representing
+        the fixed starting cells
     """
 
     def __init__(self, initial_state: list[list[int]] | None = None):
@@ -29,6 +32,7 @@ class Board:
         if initial_state is not None:
             self.state: list[list[int]] = initial_state
             self.zeroes: int = utils.count_zeroes(self.state)
+            self.initial_cells = utils.get_initial_cells(self.state)
         else:
             self.state: list[list[int]] = [[0 for _ in range(9)] for _ in range(9)]
             self.zeroes: int = 81

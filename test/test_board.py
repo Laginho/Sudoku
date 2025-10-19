@@ -6,14 +6,15 @@
 
 import unittest
 
-from utils import EXAMPLE_BOARD
+from copy import deepcopy as copy
+from utils import TEST_BOARD
 from board import Board
 
 
 class TestBoard(unittest.TestCase):
 
     def setUp(self):
-        self.board = Board(EXAMPLE_BOARD)
+        self.board = Board(copy(TEST_BOARD))
 
     def test_set_cell_valid_move(self):
         self.assertTrue(
@@ -33,14 +34,34 @@ class TestBoard(unittest.TestCase):
             "Should not be a valid move",
         )
 
+    def test_set_cell_on_initial_cell_is_denied(self):
+        self.assertFalse(
+            self.board.set_cell(0, 0, 5),
+            "Should not allow modifying an initial cell",
+        )
+
+    def test_clear_initial_cell_is_denied(self):
+        self.assertFalse(
+            self.board.clear_cell(0, 0),
+            "Should not allow clearing an initial cell",
+        )
+
     def test_clear_cell_valid(self):
         self.assertTrue(
-            self.board.clear_cell(0, 0),
+            self.board.set_cell(3, 3, 5),
+            "Should be possible to set an empty cell",
+        )
+        self.assertTrue(
+            self.board.zeroes == 1,
+            "Should have 1 zero now",
+        )
+        self.assertTrue(
+            self.board.clear_cell(3, 3),
             "Should be possible to clear a set cell",
         )
         self.assertTrue(
-            self.board.zeroes == 3,
-            "Should have 3 zeroes now",
+            self.board.zeroes == 2,
+            "Should have 2 zeroes now",
         )
 
     def test_clear_cell_invalid(self):

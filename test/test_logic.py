@@ -1,3 +1,5 @@
+# pylint: disable=C0115
+# pylint: disable=C0111
 """Tested functions
 
 - check_row

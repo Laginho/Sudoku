@@ -112,20 +112,20 @@ class Board:
     def __str__(self) -> str:
         """The string representation of the board."""
 
-        board = ""
+        board_str = ""
         for i in range(9):
             for j in range(9):
                 if self.state[i][j] == 0:
-                    board += "  "
+                    board_str += "  "
                 else:
-                    board += f"{self.state[i][j]} "
+                    board_str += f"{self.state[i][j]} "
                 if j in (2, 5):
-                    board += "| "
-            board += "\n"
+                    board_str += "| "
+            board_str += "\n"
             if i in (2, 5):
-                board += "- - - + - - - + - - -\n"
+                board_str += "- - - + - - - + - - -\n"
 
-        return board
+        return board_str
 
 
 if __name__ == "__main__":

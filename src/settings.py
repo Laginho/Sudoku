@@ -12,3 +12,5 @@ Constants:
 """
 
 WINDOW_SIZE: tuple[int, int] = (405, 720)
+
+NUMBER_SIZE: int = 30

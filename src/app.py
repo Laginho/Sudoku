@@ -26,9 +26,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
-from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.graphics import Color, Rectangle
 
 from board import Board
 import constants as c
@@ -131,22 +132,41 @@ class SudokuApp(App):
                 else:
                     num_text = ""
 
+                button.pos_hint = {"row": i, "col": j}
+                button.bind(on_press=self.on_cell_press)
+
                 button.text = num_text
+                button.font_size = s.NUMBER_SIZE
                 button.background_normal = ""
                 button.background_color = c.DEFAULT
                 button.color = c.BLACK
-                button.pos_hint = {"row": i, "col": j}
-                button.bind(on_press=self.on_cell_press)
 
                 sudoku_grid.add_widget(button)
 
         number_palette = self.sm.get_screen("game").ids.number_palette
         number_palette.clear_widgets()
         for i in range(1, 10):
-            number_button = Button(text=str(i))
+            number_button = Button(text=str(i), font_size=s.NUMBER_SIZE)
+            number_button.background_normal = ""
+            number_button.background_color = (
+                0.9 * c.DEFAULT[0],
+                0.9 * c.DEFAULT[1],
+                0.9 * c.DEFAULT[2],
+                1,
+            )
+            number_button.color = c.BLUE
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
-        clear_button = Button(text="C")
+
+        clear_button = Button(text="C", font_size=s.NUMBER_SIZE)
+        clear_button.color = c.BLUE
+        clear_button.background_normal = ""
+        clear_button.background_color = (
+            0.9 * c.DEFAULT[0],
+            0.9 * c.DEFAULT[1],
+            0.9 * c.DEFAULT[2],
+            1,
+        )
         clear_button.bind(on_press=self.on_number_press)
         number_palette.add_widget(clear_button)
 

@@ -38,7 +38,7 @@ import db_utils
 
 Builder.load_file("sudoku.kv")
 Window.size = s.WINDOW_SIZE
-Window.clearcolor = c.LGRAY
+Window.clearcolor = c.DEFAULT
 
 
 class GameScreen(Screen):
@@ -133,7 +133,7 @@ class SudokuApp(App):
 
                 button.text = num_text
                 button.background_normal = ""
-                button.background_color = c.LGRAY
+                button.background_color = c.DEFAULT
                 button.color = c.BLACK
                 button.pos_hint = {"row": i, "col": j}
                 button.bind(on_press=self.on_cell_press)
@@ -161,9 +161,7 @@ class SudokuApp(App):
         col = int(button.pos_hint["col"])
 
         if self.selected_button:
-            self.selected_button.background_color = (
-                c.GRAY if self.selected_button.text != "" else c.LGRAY
-            )
+            self.selected_button.background_color = c.DEFAULT
 
         if (row, col) in self.board.initial_cells:
             self.selected_grid = (-1, -1)
@@ -190,10 +188,10 @@ class SudokuApp(App):
         if number_to_set == 0:
             self.board.clear_cell(row, col)
             self.selected_button.text = ""
-            self.selected_button.background_color = c.LGRAY
+            self.selected_button.background_color = c.DEFAULT
 
         elif self.board.set_cell(row, col, number_to_set):
-            self.selected_button.background_color = c.LGRAY
+            self.selected_button.background_color = c.DEFAULT
             self.selected_button.text = str(number_to_set)
             if self.board.is_solved():
                 self.show_win_popup()

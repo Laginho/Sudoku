@@ -128,3 +128,59 @@ def parse_puzzle_string(puzzle_str: str) -> list[list[int]]:
 
     except ValueError:
         return [[]]
+
+
+def rgb_to_kivy(color: tuple[int, int, int]) -> tuple[float, float, float, float]:
+    """Converts an RGB color tuple to the Kivy RGBA format up to two decimal places.
+
+    You can use it like this:
+
+        color = (137, 0, 0)
+        kivy_color = Color.rgb_to_kivy(color)
+
+        # (0.54, 0.0, 0.0, 1.0)
+
+    Args:
+        color: A tuple representing the RGB color.
+
+    Returns:
+        A tuple representing the Kivy RGBA format.
+    """
+
+    r = round(color[0] / 255, 2)
+    g = round(color[1] / 255, 2)
+    b = round(color[2] / 255, 2)
+
+    return (r, g, b, 1.0)
+
+
+def hex_to_kivy(color: str | int) -> tuple[float, float, float, float]:
+    """Converts a hex color to the Kivy RGBA format up to two decimal places.
+
+    You can use it like this:
+
+        color: str = "#FF5733"
+        color2: int = 0xFF5733
+        kivy_color = Color.hex_to_kivy(color)
+        kivy_color2 = Color.hex_to_kivy(color2)
+
+        # color == (1.0, 0.34, 0.2, 1.0)
+        # color2 == (1.0, 0.34, 0.2, 1.0)
+
+    Args:
+        color: A string, or int, representing the hex color.
+
+    Returns:
+        A tuple representing the Kivy RGBA format.
+    """
+
+    if isinstance(color, int):
+        color = f"#{color:06X}"
+    elif color.startswith("#"):
+        color = color[1:]
+
+    r = round(int(color[0:2], 16) / 255, 2)
+    g = round(int(color[2:4], 16) / 255, 2)
+    b = round(int(color[4:6], 16) / 255, 2)
+
+    return (r, g, b, 1.0)

@@ -1,22 +1,17 @@
-"""General utility constants and functions"""
+# pylint: disable=C0103
 
-from dataclasses import dataclass
+"""Utility helpers used across the project.
 
-WINDOW_SIZE: tuple[int, int] = (405, 720)
+This module contains several small helper functions for validating and
+manipulating Sudoku board data structures.
 
-EXAMPLE_BOARD: list[list[int]] = [
-    [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    [4, 5, 6, 7, 8, 9, 1, 2, 3],
-    [7, 8, 9, 1, 2, 3, 4, 5, 6],
-    [2, 3, 4, 0, 6, 7, 8, 9, 1],
-    [5, 6, 7, 8, 9, 1, 2, 3, 4],
-    [8, 9, 1, 2, 3, 4, 5, 6, 7],
-    [3, 4, 5, 6, 7, 8, 9, 0, 2],
-    [6, 7, 8, 9, 1, 2, 3, 4, 5],
-    [9, 1, 2, 3, 4, 5, 6, 7, 8],
-]
-
-TEST_BOARD = EXAMPLE_BOARD
+Functions:
+    has_nonzero_duplicate: Detect duplicates among non-zero values in a list.
+    count_zeroes: Count the empty cells on a board.
+    get_initial_cells: Return coordinates for initially filled cells.
+    is_valid_input: Validate terminal input for moves.
+    parse_puzzle_string: Convert an 81-char puzzle string to a 9x9 grid.
+"""
 
 
 def has_nonzero_duplicate(vector: list[int]) -> bool:
@@ -52,10 +47,20 @@ def count_zeroes(state: list[list[int]]) -> int:
     Returns:
         The number of zeroes
     """
+
     return sum(row.count(0) for row in state)
 
 
 def get_initial_cells(state: list[list[int]]) -> set[tuple[int, int]]:
+    """Returns a set of protected cells of the initial board state
+
+    Args:
+        state(list[list[int]]): The initial board state.
+
+    Returns:
+        set: The coordinates for all initially filled cells.
+    """
+
     initial_cells: set[tuple[int, int]] = set()
 
     for row in range(9):
@@ -123,18 +128,3 @@ def parse_puzzle_string(puzzle_str: str) -> list[list[int]]:
 
     except ValueError:
         return [[]]
-
-
-@dataclass
-class Colors:
-    """Color constants"""
-
-    RED: tuple[float, float, float, float] = (1, 0, 0, 1)
-    GREEN: tuple[float, float, float, float] = (0, 1, 0, 1)
-    BLUE: tuple[float, float, float, float] = (0, 0, 1, 1)
-    YELLOW: tuple[float, float, float, float] = (1, 1, 0, 1)
-    WHITE: tuple[float, float, float, float] = (1, 1, 1, 1)
-    BLACK: tuple[float, float, float, float] = (0, 0, 0, 1)
-    GRAY: tuple[float, float, float, float] = (0.5, 0.5, 0.5, 1)
-    DGRAY: tuple[float, float, float, float] = (0.2, 0.2, 0.2, 1)
-    SELECTED: tuple[float, float, float, float] = (0.6, 0.6, 1, 0.6)

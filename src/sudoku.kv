@@ -1,18 +1,100 @@
+#:import c utils.Colors
+#:import dp kivy.metrics.dp
+
 <SudokuGrid@GridLayout>:
     cols: 9
     rows: 9
+    padding: '2dp'
+    spacing: '1dp'
+    canvas.after:
+        Color:
+            rgba: c.BLACK
+
+        # outer box
+        Line:
+            width: dp(2)
+            rectangle: (self.x + 3, self.y + 3, self.width - 6, self.height - 5)
+
+        # thinner inner lines
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 1/9 + 0.7, self.y + dp(4), self.x + self.width * 1/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 2/9 + 0.7, self.y + dp(4), self.x + self.width * 2/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 4/9 + 0.7, self.y + dp(4), self.x + self.width * 4/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 5/9 + 0.7, self.y + dp(4), self.x + self.width * 5/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 7/9 + 0.7, self.y + dp(4), self.x + self.width * 7/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + self.width * 8/9 + 0.7, self.y + dp(4), self.x + self.width * 8/9 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 1/9 + 0.7, self.right - dp(4), self.y + self.height * 1/9 + 0.7
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 2/9 + 0.7, self.right - dp(4), self.y + self.height * 2/9 + 0.7
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 4/9 + 0.7, self.right - dp(4), self.y + self.height * 4/9 + 0.7
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 5/9 + 0.7, self.right - dp(4), self.y + self.height * 5/9 + 0.7
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 7/9 + 0.7, self.right - dp(4), self.y + self.height * 7/9 + 0.7
+        Line:
+            width: dp(1)
+            points: self.x + dp(4), self.y + self.height * 8/9 + 0.7, self.right - dp(4), self.y + self.height * 8/9 + 0.7
+
+        # thicker inner lines (every 3/9 = 1/3 and 6/9 = 2/3)
+        Line:
+            width: dp(2)
+            points: self.x + self.width * 1/3 + 0.7, self.y + dp(4), self.x + self.width * 1/3 + 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(2)
+            points: self.x + self.width * 2/3 - 0.7, self.y + dp(4), self.x + self.width * 2/3 - 0.7, self.top - dp(4) + 1
+        Line:
+            width: dp(2)
+            points: self.x + dp(4), self.y + self.height * 1/3 + 0.7, self.right - dp(4), self.y + self.height * 1/3 + 0.7
+        Line:
+            width: dp(2)
+            points: self.x + dp(4), self.y + self.height * 2/3 - 0.7, self.right - dp(4), self.y + self.height * 2/3 - 0.7
+
+        # outer box
+        Line:
+            width: dp(2)
+            rectangle: (self.x + 3, self.y + 3, self.width - 6, self.height - 5)
+
+<SudokuCell@Button>:
+    font_size: '30sp'
+    background_normal: ''
+    background_color: c.WHITE
+    color: c.BLACK
+
+<NumberButton@Button>:
+    font_size: '20sp'
+    background_normal: ''
+    background_color: c.WHITE
+    color: c.BLACK
 
 <GameScreen@Screen>:
     FloatLayout:
         SudokuGrid:
             id: sudoku_grid
-            size_hint: 0.9, 0.7
+            size_hint: 0.9, 0.5
             pos_hint: {'center_x': 0.5, 'top': 0.95}
 
         BoxLayout:
             id: number_palette
             orientation: 'horizontal'
-            size_hint_y: None
+            size_hint: 0.9, None 
             height: '48dp'
             pos_hint: {'center_x': 0.5, 'y': 0.05}
             spacing: '5dp'
@@ -56,8 +138,9 @@
         Label:
             text: "Sudoku"
             font_size: '48sp'
+            color: c.BLACK
             size_hint_y: None
-            height: self.texture_size[1]
+            height: root.height * 1.2
 
         BoxLayout:
             orientation: 'horizontal'
@@ -67,13 +150,13 @@
 
             Button:
                 text: "Play"
-                on_press: 
+                on_release: 
                     app.root.current = 'game'
                     app.game_start()
 
             Button:
                 text: "Exit"
-                on_press: app.stop()
+                on_release: app.stop()
 
 ScreenManager:
     MenuScreen:

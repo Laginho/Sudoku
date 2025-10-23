@@ -1,10 +1,24 @@
-# type: ignore
+# pylint: disable=no-member, unused-import, attribute-defined-outside-init
 
-"""The main application class, which handles the Kivy layout.
+"""Kivy application and UI components for the Sudoku game.
 
-It consists of a main SudokuApp class, which will be the actual app.
-The other classes are just boilerplate for the sudoku.kv file to work.
+This module contains the main :class:`SudokuApp` application class and a few
+lightweight widget subclasses that are referenced from ``sudoku.kv``.
+
+The application is responsible for loading puzzles from the database,
+instantiating the :class:`Board`, wiring UI callbacks and showing the win
+popup when the puzzle is solved.
+
+Classes:
+    SudokuApp: Kivy :class:`~kivy.app.App` subclass that manages the game UI.
+    GameScreen: Screen used for the game view.
+    MenuScreen: Screen used for the main menu.
+    SudokuGrid: GridLayout used to display the 9x9 board.
+    WinPopup: Popup shown when the player solves the puzzle.
 """
+
+
+from copy import deepcopy as copy
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -14,31 +28,33 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
-
-from copy import deepcopy as copy
+from kivy.lang import Builder
 
 from board import Board
-from utils import EXAMPLE_BOARD, WINDOW_SIZE
-from utils import Colors as c
+import constants as c
+import settings as s
 import db_utils
 
-Window.size = WINDOW_SIZE
+
+Builder.load_file("sudoku.kv")
+Window.size = s.WINDOW_SIZE
+Window.clearcolor = c.LGRAY
 
 
 class GameScreen(Screen):
-    pass
+    """The main game screen."""
 
 
 class MenuScreen(Screen):
-    pass
+    """The main menu screen."""
 
 
 class SudokuGrid(GridLayout):
-    pass
+    """The Sudoku grid layout."""
 
 
 class WinPopup(Popup):
-    pass
+    """Popup displayed when the player wins."""
 
 
 class SudokuApp(App):
@@ -93,7 +109,7 @@ class SudokuApp(App):
 
         if not puzzle_grid:
             print("could not find a puzzle to load.")
-            puzzle_grid = copy(EXAMPLE_BOARD)
+            puzzle_grid = copy(s.EXAMPLE_BOARD)
 
         self.board = Board(puzzle_grid)
         self.selected_grid: tuple[int, int] = (-1, -1)
@@ -112,11 +128,13 @@ class SudokuApp(App):
                 if number != 0:
                     self.board.initial_cells.add((i, j))
                     num_text = str(number)
-                    button.background_color = c.GRAY
                 else:
                     num_text = ""
 
                 button.text = num_text
+                button.background_normal = ""
+                button.background_color = c.LGRAY
+                button.color = c.BLACK
                 button.pos_hint = {"row": i, "col": j}
                 button.bind(on_press=self.on_cell_press)
 
@@ -128,7 +146,7 @@ class SudokuApp(App):
             number_button = Button(text=str(i))
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
-        clear_button = Button(text="Clear")
+        clear_button = Button(text="C")
         clear_button.bind(on_press=self.on_number_press)
         number_palette.add_widget(clear_button)
 
@@ -144,7 +162,7 @@ class SudokuApp(App):
 
         if self.selected_button:
             self.selected_button.background_color = (
-                c.GRAY if self.selected_button.text != "" else c.WHITE
+                c.GRAY if self.selected_button.text != "" else c.LGRAY
             )
 
         if (row, col) in self.board.initial_cells:
@@ -167,15 +185,15 @@ class SudokuApp(App):
             return
 
         row, col = self.selected_grid
-        number_to_set = int(button.text) if button.text != "Clear" else 0
+        number_to_set = int(button.text) if button.text != "C" else 0
 
         if number_to_set == 0:
             self.board.clear_cell(row, col)
             self.selected_button.text = ""
-            self.selected_button.background_color = c.WHITE
+            self.selected_button.background_color = c.LGRAY
 
         elif self.board.set_cell(row, col, number_to_set):
-            self.selected_button.background_color = c.GRAY
+            self.selected_button.background_color = c.LGRAY
             self.selected_button.text = str(number_to_set)
             if self.board.is_solved():
                 self.show_win_popup()

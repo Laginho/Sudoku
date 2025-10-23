@@ -1,4 +1,13 @@
-"""Functions for working with the SQLite database."""
+"""Database helper functions.
+
+This module implements simple helpers to initialize a SQLite database used to
+store Sudoku puzzles and to load puzzles by difficulty.
+
+Functions:
+    setup_database: Create the puzzles table when it does not exist.
+    add_puzzles: Insert a small set of example puzzles into the database.
+    load_puzzle_from_db: Load a random puzzle for a given difficulty.
+"""
 
 import sqlite3
 

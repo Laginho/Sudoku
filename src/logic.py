@@ -1,4 +1,8 @@
-"""Handles the logic for the board"""
+"""Board validation logic.
+
+Small collection of helpers used to validate rows, columns and 3x3 squares of a
+Sudoku board. The primary entry point is :func:`check_board`.
+"""
 
 import utils
 

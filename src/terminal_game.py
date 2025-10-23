@@ -1,4 +1,8 @@
-"""Interface for playing the game in the terminal."""
+"""Terminal interface for playing the Sudoku game.
+
+Provides a simple text-based loop that prompts the user for moves and updates
+the board until the puzzle is solved.
+"""
 
 from board import Board
 from utils import is_valid_input

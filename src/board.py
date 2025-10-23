@@ -1,4 +1,13 @@
-"""Handles the board layout"""
+"""Board management utilities.
+
+This module provides the :class:`Board` class which represents a single
+Sudoku board. The board is stored as a 9x9 nested list of integers where
+zeros represent empty cells. The class implements helper methods that
+validate and modify the board state.
+
+Classes:
+    Board: Encapsulates the board state and provides operations to modify it.
+"""
 
 import logic
 import utils

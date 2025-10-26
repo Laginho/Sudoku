@@ -11,7 +11,6 @@ Classes:
 
 import logic
 import utils
-import constants
 
 
 class Board:

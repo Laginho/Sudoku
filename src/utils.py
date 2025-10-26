@@ -27,14 +27,9 @@ def has_nonzero_duplicate(vector: list[int]) -> bool:
     Returns:
         True if the list contains duplicates, False otherwise
     """
-    counted_elements: set[int] = set()
-
-    for element in vector:
-        if element in counted_elements and element != 0:
+    for i in range(1, 10):
+        if vector.count(i) > 1:
             return True
-
-        counted_elements.add(element)
-
     return False
 
 

@@ -37,7 +37,6 @@ import settings as s
 import db_utils
 
 
-Builder.load_file("sudoku.kv")
 Window.size = s.WINDOW_SIZE
 Window.clearcolor = c.DEFAULT
 
@@ -50,8 +49,8 @@ class MenuScreen(Screen):
     """The main menu screen."""
 
 
-class SudokuGrid(GridLayout):
-    """The Sudoku grid layout."""
+# class SudokuGrid(GridLayout):
+#     """The Sudoku grid layout."""
 
 
 class WinPopup(Popup):
@@ -106,11 +105,15 @@ class SudokuApp(App):
         number palette.
         """
 
+        # Database setup
+
         puzzle_grid = db_utils.load_puzzle_from_db()
 
         if not puzzle_grid:
             print("could not find a puzzle to load.")
-            puzzle_grid = copy(s.EXAMPLE_BOARD)
+            puzzle_grid = copy(c.EXAMPLE_BOARD)
+
+        # Board setup
 
         self.board = Board(puzzle_grid)
         self.selected_grid: tuple[int, int] = (-1, -1)
@@ -118,6 +121,8 @@ class SudokuApp(App):
         self.cells: list[list[Button]] = [
             [Button() for _ in range(9)] for _ in range(9)
         ]
+
+        # Board UI setup
 
         sudoku_grid = self.sm.get_screen("game").ids.sudoku_grid
         sudoku_grid.clear_widgets()
@@ -142,6 +147,8 @@ class SudokuApp(App):
                 button.color = c.BLACK
 
                 sudoku_grid.add_widget(button)
+
+        # Number palette UI setup
 
         number_palette = self.sm.get_screen("game").ids.number_palette
         number_palette.clear_widgets()

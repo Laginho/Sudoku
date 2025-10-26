@@ -11,6 +11,7 @@ Classes:
 
 import logic
 import utils
+import constants
 
 
 class Board:
@@ -135,8 +136,3 @@ class Board:
                 board_str += "- - - + - - - + - - -\n"
 
         return board_str
-
-
-if __name__ == "__main__":
-    board = Board(utils.EXAMPLE_BOARD)
-    print(board)

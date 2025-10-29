@@ -112,12 +112,13 @@
                 on_press: app.toggle_pencil_mode()
 
             ActionButton:
-                text: "Undo"
-                # on_press: app.undo_move() # TODO: Implement Undo
+                id: auto_pencil
+                text: "Auto Pencil"
+                on_press: app.auto_pencil()
 
             ActionButton:
                 text: "Reset"
-                # on_press: app.reset() # TODO: Implement Reset
+                on_press: app.reset()
 
         # --- Number Palette ---
         BoxLayout:

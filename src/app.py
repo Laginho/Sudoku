@@ -32,6 +32,7 @@ from kivy.lang import Builder
 from kivy.graphics import Color, Rectangle
 
 from board import Board
+import logic
 import constants as c
 import settings as s
 import db_utils
@@ -195,8 +196,7 @@ class SudokuApp(App):
             self.selected_button.background_color = c.DEFAULT
 
         if (row, col) in self.board.initial_cells:
-            self.selected_grid = (-1, -1)
-            self.selected_button = None
+            self.deselect_button()
             return
 
         self.selected_grid = (row, col)
@@ -220,39 +220,41 @@ class SudokuApp(App):
             if number_to_set == 0:
                 return
 
+            if not logic.check_move(self.board.state, row, col, number_to_set):
+                return
+
             pencil_set = self.board.pencil_marks[row][col]
             if number_to_set in pencil_set:
                 pencil_set.remove(number_to_set)
             else:
                 pencil_set.add(number_to_set)
 
-            pencil_text = " ".join(map(str, sorted(list(pencil_set))))
-            self.selected_button.text = pencil_text
-            self.selected_button.font_size = s.NUMBER_SIZE // 3
-            self.selected_button.color = c.BLUE
-
-            self.selected_grid = (-1, -1)
-            self.selected_button = None
+            self.update_pencil_marks()
             return
 
-        self.selected_button.font_size = s.NUMBER_SIZE
-        self.selected_button.color = c.BLACK
         if number_to_set == 0:
             self.board.clear_cell(row, col)
             self.selected_button.text = ""
             self.selected_button.background_color = c.DEFAULT
+            self.board.pencil_marks[row][col].clear()
 
         elif self.board.set_cell(row, col, number_to_set):
             self.selected_button.background_color = c.DEFAULT
+            self.selected_button.color = c.BLACK
+            self.selected_button.font_size = s.NUMBER_SIZE
             self.selected_button.text = str(number_to_set)
+
+            self.board.pencil_marks[row][col].clear()
+            self.update_all_marks()
+
             if self.board.is_solved():
                 self.show_win_popup()
         else:
             print("Invalid move.")
+            print(self.board)
             return
 
-        self.selected_grid = (-1, -1)
-        self.selected_button = None
+        self.deselect_button()
 
     def toggle_pencil_mode(self):
         """Toggles pencil mode on or off."""
@@ -260,21 +262,102 @@ class SudokuApp(App):
         self.pencil_mode = not self.pencil_mode
         self.update_pencil_button_visual()
 
+    def update_pencil_marks(self):
+        """Updates the display of pencil marks on the selected grid.
+
+        The text is rendered as a 3x3 grid, with each number having
+        its reserved spot.
+        """
+
+        row, col = self.selected_grid
+        pencil_set = self.board.pencil_marks[row][col]
+
+        text_lines = ["", "", ""]
+        for num in range(1, 10):
+            line_idx = (num - 1) // 3
+            pos_in_line = (num - 1) % 3
+            if num in pencil_set:
+                text_lines[line_idx] += str(num)
+            else:
+                text_lines[line_idx] += "   "
+            if pos_in_line < 2:
+                text_lines[line_idx] += "   "
+
+        self.cells[row][col].font_size = s.NUMBER_SIZE // 3
+        self.cells[row][col].color = c.DGRAY
+        self.cells[row][col].text = "\n".join(text_lines)
+
+    def update_all_marks(self):
+        """Updates pencil marks for all cells on the board."""
+
+        for i in range(9):
+            for j in range(9):
+                if (i, j) in self.board.initial_cells:
+                    continue
+                if self.board.state[i][j] != 0:
+                    continue
+
+                self.selected_grid = (i, j)
+                self.selected_button = self.cells[i][j]
+
+                self.update_pencil_marks()
+
+        self.deselect_button()
+
     def update_pencil_button_visual(self):
         """Updates the pencil button's appearance based on the mode."""
 
         pencil_button = self.sm.get_screen("game").ids.pencil_button
 
         if self.pencil_mode:
-            pencil_button.background_color = c.GREEN
-
-            if self.selected_button:
-                self.selected_grid = (-1, -1)
-                self.selected_button.background_color = c.DEFAULT
-                self.selected_button = None
+            pencil_button.background_color = c.LBLUE
             return
 
         pencil_button.background_color = c.LGRAY
+
+    def auto_pencil(self):
+        """Automatically fills in all possible pencil marks."""
+
+        for i in range(9):
+            for j in range(9):
+                if (i, j) in self.board.initial_cells:
+                    continue
+
+                self.selected_grid = (i, j)
+                self.selected_button = self.cells[i][j]
+
+                pencil_set = set()
+                for num in range(1, 10):
+                    if logic.check_move(self.board.state, i, j, num):
+                        pencil_set.add(num)
+
+                self.board.pencil_marks[i][j] = pencil_set
+                self.update_pencil_marks()
+                self.deselect_button()
+
+    def deselect_button(self):
+        """Deselects the currently selected button, if any."""
+
+        if self.selected_button:
+            self.selected_button.background_color = c.DEFAULT
+            self.selected_button = None
+            self.selected_grid = (-1, -1)
+
+    def reset(self):
+        """Resets the current puzzle to its initial state."""
+
+        for i in range(9):
+            for j in range(9):
+                if (i, j) in self.board.initial_cells:
+                    continue
+
+                self.board.clear_cell(i, j)
+                self.cells[i][j].text = ""
+                self.cells[i][j].color = c.BLACK
+                self.cells[i][j].font_size = s.NUMBER_SIZE
+                self.board.pencil_marks[i][j].clear()
+
+        self.deselect_button()
 
     def show_win_popup(self):
         """Finds the popup in the kv file and opens it."""

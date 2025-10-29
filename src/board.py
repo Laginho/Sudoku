@@ -98,6 +98,7 @@ class Board:
             return False
 
         self.zeroes -= 1
+        self.check_pencil_marks()
         return True
 
     def clear_cell(self, row: int, col: int) -> bool:
@@ -123,6 +124,20 @@ class Board:
         self.state[row][col] = 0
         self.zeroes += 1
         return True
+
+    def check_pencil_marks(self):
+        """Updates pencil marks based on current board state."""
+
+        for i in range(9):
+            for j in range(9):
+                if (i, j) in self.initial_cells:
+                    continue
+
+                current_marks: set[int] = self.pencil_marks[i][j]
+                for k in range(1, 10):
+                    if not logic.check_move(self.state, i, j, k):
+                        if k in current_marks:
+                            current_marks.remove(k)
 
     def __str__(self) -> str:
         """The string representation of the board."""

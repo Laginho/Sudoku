@@ -26,6 +26,9 @@ class Board:
 
         initial_cells: A set of tuples representing
         the fixed starting cells
+
+        pencil_marks: A 2D array of sets representing
+        possible pencil marks for each cell
     """
 
     def __init__(self, initial_state: list[list[int]] | None = None):
@@ -37,6 +40,9 @@ class Board:
         """
 
         self.initial_cells: set[tuple[int, int]] = set()
+        self.pencil_marks: list[list[set[int]]] = [
+            [set() for _ in range(9)] for _ in range(9)
+        ]
 
         if initial_state is not None:
             self.state: list[list[int]] = initial_state

@@ -93,6 +93,8 @@ class SudokuApp(App):
         self.sm = ScreenManager()
         self.sm.add_widget(MenuScreen(name="menu"))
         self.sm.add_widget(GameScreen(name="game"))
+        self.pencil_mode = False
+
         db_utils.setup_database()
         db_utils.add_puzzles()
         return self.sm
@@ -212,6 +214,24 @@ class SudokuApp(App):
         row, col = self.selected_grid
         number_to_set = int(button.text) if button.text != "C" else 0
 
+        if self.pencil_mode:
+            pencil_marks = self.board.pencil_marks[row][col]
+            if number_to_set == 0:
+                pencil_marks.clear()
+                self.selected_button.text = ""
+            else:
+                if number_to_set in pencil_marks:
+                    pencil_marks.remove(number_to_set)
+                else:
+                    pencil_marks.add(number_to_set)
+                self.selected_button.text = " ".join(
+                    str(num) for num in sorted(pencil_marks)
+                )
+            self.selected_button.background_color = c.DEFAULT
+            self.selected_grid = (-1, -1)
+            self.selected_button = None
+            return
+
         if number_to_set == 0:
             self.board.clear_cell(row, col)
             self.selected_button.text = ""
@@ -228,6 +248,11 @@ class SudokuApp(App):
 
         self.selected_grid = (-1, -1)
         self.selected_button = None
+
+    def toggle_pencil_mode(self):
+        """Toggles pencil mode on or off."""
+
+        self.pencil_mode = not self.pencil_mode
 
     def show_win_popup(self):
         """Finds the popup in the kv file and opens it."""

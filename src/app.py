@@ -123,6 +123,8 @@ class SudokuApp(App):
         self.cells: list[list[Button]] = [
             [Button() for _ in range(9)] for _ in range(9)
         ]
+        self.pencil_mode = False
+        self.update_pencil_button_visual()
 
         # Board UI setup
 
@@ -215,23 +217,26 @@ class SudokuApp(App):
         number_to_set = int(button.text) if button.text != "C" else 0
 
         if self.pencil_mode:
-            pencil_marks = self.board.pencil_marks[row][col]
             if number_to_set == 0:
-                pencil_marks.clear()
-                self.selected_button.text = ""
+                return
+
+            pencil_set = self.board.pencil_marks[row][col]
+            if number_to_set in pencil_set:
+                pencil_set.remove(number_to_set)
             else:
-                if number_to_set in pencil_marks:
-                    pencil_marks.remove(number_to_set)
-                else:
-                    pencil_marks.add(number_to_set)
-                self.selected_button.text = " ".join(
-                    str(num) for num in sorted(pencil_marks)
-                )
-            self.selected_button.background_color = c.DEFAULT
+                pencil_set.add(number_to_set)
+
+            pencil_text = " ".join(map(str, sorted(list(pencil_set))))
+            self.selected_button.text = pencil_text
+            self.selected_button.font_size = s.NUMBER_SIZE // 3
+            self.selected_button.color = c.BLUE
+
             self.selected_grid = (-1, -1)
             self.selected_button = None
             return
 
+        self.selected_button.font_size = s.NUMBER_SIZE
+        self.selected_button.color = c.BLACK
         if number_to_set == 0:
             self.board.clear_cell(row, col)
             self.selected_button.text = ""
@@ -253,6 +258,23 @@ class SudokuApp(App):
         """Toggles pencil mode on or off."""
 
         self.pencil_mode = not self.pencil_mode
+        self.update_pencil_button_visual()
+
+    def update_pencil_button_visual(self):
+        """Updates the pencil button's appearance based on the mode."""
+
+        pencil_button = self.sm.get_screen("game").ids.pencil_button
+
+        if self.pencil_mode:
+            pencil_button.background_color = c.GREEN
+
+            if self.selected_button:
+                self.selected_grid = (-1, -1)
+                self.selected_button.background_color = c.DEFAULT
+                self.selected_button = None
+            return
+
+        pencil_button.background_color = c.LGRAY
 
     def show_win_popup(self):
         """Finds the popup in the kv file and opens it."""

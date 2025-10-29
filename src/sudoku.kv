@@ -84,6 +84,12 @@
     background_color: c.WHITE
     color: c.BLACK
 
+<ActionButton@Button>:
+    font_size: '16sp'
+    background_normal: ''
+    background_color: c.LGRAY
+    color: c.BLACK
+
 <GameScreen@Screen>:
     FloatLayout:
         SudokuGrid:
@@ -91,10 +97,33 @@
             size_hint: 0.9, 0.5
             pos_hint: {'center_x': 0.5, 'top': 0.85}
 
+        # --- Action Bar ---
+        BoxLayout:
+            id: action_bar
+            orientation: 'horizontal'
+            size_hint: 0.9, None
+            height: '40dp'
+            pos_hint: {'center_x': 0.65, 'y': 0.23}
+            spacing: '15dp'
+
+            ActionButton:
+                id: pencil_button
+                text: "Pencil"
+                on_press: app.toggle_pencil_mode()
+
+            ActionButton:
+                text: "Undo"
+                # on_press: app.undo_move() # TODO: Implement Undo
+
+            ActionButton:
+                text: "Reset"
+                # on_press: app.reset() # TODO: Implement Reset
+
+        # --- Number Palette ---
         BoxLayout:
             id: number_palette
             orientation: 'horizontal'
-            size_hint: 0.9, None 
+            size_hint: 0.9, None
             height: '48dp'
             pos_hint: {'center_x': 0.5, 'y': 0.1}
             spacing: '5dp'

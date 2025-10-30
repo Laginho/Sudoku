@@ -17,9 +17,10 @@ Classes:
     WinPopup: Popup shown when the player solves the puzzle.
 """
 
-
+import os
 from copy import deepcopy as copy
 
+from kivy.resources import resource_add_path
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -29,7 +30,7 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, Rectangle, RoundedRectangle
 
 from board import Board
 import logic
@@ -37,7 +38,8 @@ import constants as c
 import settings as s
 import db_utils
 
-
+project_root = os.path.dirname(os.path.abspath(__file__))
+resource_add_path(os.path.join(project_root, "assets"))
 Window.size = s.WINDOW_SIZE
 Window.clearcolor = c.DEFAULT
 
@@ -52,6 +54,10 @@ class MenuScreen(Screen):
 
 # class SudokuGrid(GridLayout):
 #     """The Sudoku grid layout."""
+
+
+class NumberButton(Button):
+    """Button used for numbers in the palette."""
 
 
 class WinPopup(Popup):
@@ -120,9 +126,9 @@ class SudokuApp(App):
 
         self.board = Board(puzzle_grid)
         self.selected_grid: tuple[int, int] = (-1, -1)
-        self.selected_button: Button | None = None
-        self.cells: list[list[Button]] = [
-            [Button() for _ in range(9)] for _ in range(9)
+        self.selected_button: NumberButton | None = None
+        self.cells: list[list[NumberButton]] = [
+            [NumberButton() for _ in range(9)] for _ in range(9)
         ]
         self.pencil_mode = False
         self.update_pencil_button_visual()
@@ -158,31 +164,17 @@ class SudokuApp(App):
         number_palette = self.sm.get_screen("game").ids.number_palette
         number_palette.clear_widgets()
         for i in range(1, 10):
-            number_button = Button(text=str(i), font_size=s.NUMBER_SIZE)
-            number_button.background_normal = ""
-            number_button.background_color = (
-                0.9 * c.DEFAULT[0],
-                0.9 * c.DEFAULT[1],
-                0.9 * c.DEFAULT[2],
-                1,
-            )
-            number_button.color = c.BLUE
+            number_button = NumberButton(text=str(i), font_size=s.NUMBER_SIZE)
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
+            number_button.size_hint = (1, 1)
 
-        clear_button = Button(text="C", font_size=s.NUMBER_SIZE)
-        clear_button.color = c.BLUE
-        clear_button.background_normal = ""
-        clear_button.background_color = (
-            0.9 * c.DEFAULT[0],
-            0.9 * c.DEFAULT[1],
-            0.9 * c.DEFAULT[2],
-            1,
-        )
+        clear_button = NumberButton(text="C", font_size=s.NUMBER_SIZE)
         clear_button.bind(on_press=self.on_number_press)
         number_palette.add_widget(clear_button)
+        clear_button.size_hint = (1, 1)
 
-    def on_cell_press(self, button: Button):
+    def on_cell_press(self, button: NumberButton):
         """Handles the pressing of a cell button on the Sudoku grid.
 
         Args:
@@ -203,7 +195,7 @@ class SudokuApp(App):
         self.selected_button = button
         button.background_color = c.SELECTED
 
-    def on_number_press(self, button: Button):
+    def on_number_press(self, button: NumberButton):
         """Handles the pressing of a number button in the palette.
 
         Args:
@@ -309,11 +301,31 @@ class SudokuApp(App):
 
         pencil_button = self.sm.get_screen("game").ids.pencil_button
 
+        pencil_button.canvas.before.clear()
         if self.pencil_mode:
-            pencil_button.background_color = c.LBLUE
-            return
+            with pencil_button.canvas.before:
+                Color(*c.SELECTED)
+                bg = RoundedRectangle(
+                    pos=pencil_button.pos,
+                    size=pencil_button.size,
+                    radius=[(12, 12)] * 4,
+                )
+        else:
+            with pencil_button.canvas.before:
+                Color(0, 0, 0, 0)
+                bg = RoundedRectangle(
+                    pos=pencil_button.pos,
+                    size=pencil_button.size,
+                    radius=[(12, 12)] * 4,
+                )
 
-        pencil_button.background_color = c.LGRAY
+        def _update_bg(instance, _):
+            bg.pos = instance.pos
+            bg.size = instance.size
+
+        pencil_button.bind(pos=_update_bg, size=_update_bg)
+
+        pencil_button.background_color = (0, 0, 0, 0)
 
     def auto_pencil(self):
         """Automatically fills in all possible pencil marks."""

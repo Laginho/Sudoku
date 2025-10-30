@@ -35,3 +35,9 @@ BROWN: tuple[float, float, float, float] = utils.hex_to_kivy("#CC994D")
 SELECTED: tuple[float, float, float, float] = utils.hex_to_kivy("#9999FF")
 KINDLE_BG: tuple[float, float, float, float] = utils.hex_to_kivy("#FBF0D9")
 DEFAULT: tuple[float, float, float, float] = KINDLE_BG
+DEFAULT_N: tuple[float, float, float, float] = (
+    0.9 * DEFAULT[0],
+    0.9 * DEFAULT[1],
+    0.9 * DEFAULT[2],
+    1,
+)

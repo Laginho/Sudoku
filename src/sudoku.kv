@@ -1,4 +1,5 @@
 #:import c constants
+#:import s settings
 #:import dp kivy.metrics.dp
 
 <SudokuGrid@GridLayout>:
@@ -73,52 +74,124 @@
             rectangle: (self.x + 3, self.y + 3, self.width - 6, self.height - 5)
 
 <SudokuCell@Button>:
-    font_size: '30sp'
+    font_size: s.WINDOW_SIZE[1] // 24
     background_normal: ''
     background_color: c.WHITE
     color: c.BLACK
 
 <NumberButton@Button>:
-    font_size: '20sp'
+    font_size: s.WINDOW_SIZE[1] // 36
     background_normal: ''
-    background_color: c.WHITE
-    color: c.BLACK
+    background_color: (0, 0, 0, 0)
+    color: c.BLUE
+    canvas.before:
+        Color:
+            rgba: c.DEFAULT_N if self.state == 'normal' else c.SELECTED
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [dp(10)]
 
 <ActionButton@Button>:
     font_size: '16sp'
     background_normal: ''
-    background_color: c.LGRAY
+    background_color: (0, 0, 0, 0)
     color: c.BLACK
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 0) if self.state == 'normal' else c.SELECTED
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [dp(8)]
+
+<TopNavButton@Button>:
+    font_size: '16sp'
+    background_normal: ''
+    background_color: (0,0,0,0)
+    color: c.BLACK
+    size_hint: None, None
+    size: dp(40), dp(40)
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 0) if self.state == 'normal' else c.SELECTED
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [dp(10)]
 
 <GameScreen@Screen>:
     FloatLayout:
+        # --- Top Nav Bar ---
+        BoxLayout:
+            id: top_nav_bar
+            orientation: 'horizontal'
+            size_hint: 0.9, None
+            height: '48dp'
+            pos_hint: {'center_x': 0.5, 'top': 0.98}
+
+            TopNavButton:
+                on_release: app.quit()
+                Image:
+                    source: 'assets/back_arrow.png'
+                    center: self.parent.center
+                    size: self.parent.size[1] * 0.9, self.parent.size[1] * 0.9
+                    allow_stretch: True
+                    color: c.BLACK
+
+            Label: # Spacer
+                size_hint_x: 1.0
+
+            # TopNavButton:
+                # text: "S"
+                # on_release: app.open_settings()
+
+        # --- Sudoku Grid ---
         SudokuGrid:
             id: sudoku_grid
             size_hint: 0.9, 0.5
             pos_hint: {'center_x': 0.5, 'top': 0.85}
 
         # --- Action Bar ---
-        BoxLayout:
+        FloatLayout:
             id: action_bar
-            orientation: 'horizontal'
-            size_hint: 0.9, None
             height: '40dp'
-            pos_hint: {'center_x': 0.65, 'y': 0.23}
-            spacing: '15dp'
+            spacing: '60dp'
 
             ActionButton:
                 id: pencil_button
-                text: "Pencil"
-                on_press: app.toggle_pencil_mode()
+                pos_hint: {'center_x': 0.3, 'center_y': 0.23}
+                size_hint: 0.1, 0.05625
+                on_release: app.toggle_pencil_mode()
+                Image:
+                    source: 'assets/pencil.png'
+                    center: self.parent.center
+                    size: s.WINDOW_SIZE[1] // 24, s.WINDOW_SIZE[1] // 24
+                    allow_stretch: True
+                    color: c.BLACK
 
             ActionButton:
                 id: auto_pencil
-                text: "Auto Pencil"
-                on_press: app.auto_pencil()
+                pos_hint: {'center_x': 0.5, 'center_y': 0.23}
+                size_hint: 0.1, 0.05625
+                on_release: app.auto_pencil()
+                Image:
+                    source: 'assets/auto_pencil.png'
+                    center: self.parent.center
+                    size: s.WINDOW_SIZE[1] // 18, s.WINDOW_SIZE[1] // 18
+                    allow_stretch: True
+                    color: c.BLACK
 
             ActionButton:
-                text: "Reset"
-                on_press: app.reset()
+                pos_hint: {'center_x': 0.7, 'center_y': 0.23}
+                size_hint: 0.1, 0.05625
+                on_release: app.reset()
+                Image:
+                    source: 'assets/reset.png'
+                    center: self.parent.center
+                    size: s.WINDOW_SIZE[1] // 18, s.WINDOW_SIZE[1] // 18
+                    allow_stretch: True
+                    color: c.BLACK
 
         # --- Number Palette ---
         BoxLayout:
@@ -149,13 +222,13 @@
 
         Button:
             text: 'Play Again'
-            on_press:
+            on_release:
                 root.dismiss()
                 app.game_start()
 
         Button:
             text: 'Exit'
-            on_press:
+            on_release:
                 root.dismiss() 
                 app.quit()
 

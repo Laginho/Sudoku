@@ -11,6 +11,7 @@ Constants:
     TEST_BOARD (list[list[int]]): Alias of ``EXAMPLE_BOARD`` for convenience.
 """
 
-WINDOW_SIZE: tuple[int, int] = (405, 720)
+# default: 405x720
+WINDOW_SIZE: tuple[int, int] = (675, 1200)
 
-NUMBER_SIZE: int = 30
+NUMBER_SIZE: int = WINDOW_SIZE[1] // 24

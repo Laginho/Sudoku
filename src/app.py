@@ -23,8 +23,6 @@ from copy import deepcopy as copy
 
 from kivy.resources import resource_add_path
 from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
@@ -118,8 +116,8 @@ class SudokuApp(App):
         self.pencil_mode = False
         self.difficulty = "Not selected"
 
-        db_utils.setup_database(db_name=DB_PATH)
-        db_utils.add_puzzles_from_file(TXT_PATH, db_name=DB_PATH)
+        # db_utils.setup_database(db_name=DB_PATH)
+        # db_utils.add_puzzles_from_file(TXT_PATH, db_name=DB_PATH)
         return self.sm
 
     def game_start(self, difficulty: str):

@@ -116,8 +116,8 @@ class SudokuApp(App):
         self.pencil_mode = False
         self.difficulty = "Not selected"
 
-        db_utils.setup_database()
-        db_utils.add_puzzles_from_file(TXT_PATH)
+        db_utils.setup_database(db_name=DB_PATH)
+        db_utils.add_puzzles_from_file(TXT_PATH, db_name=DB_PATH)
         return self.sm
 
     def game_start(self, difficulty: str):
@@ -131,7 +131,7 @@ class SudokuApp(App):
         # Database setup
 
         self.difficulty = difficulty
-        puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty)
+        puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty, db_name=DB_PATH)
         self.sm.get_screen("game").ids.difficulty_label.text = (
             self.difficulty.capitalize()
         )

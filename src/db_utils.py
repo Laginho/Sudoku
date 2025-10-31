@@ -13,7 +13,7 @@ import sqlite3
 
 from utils import parse_puzzle_string
 
-DB_NAME: str = "sudoku_puzzles.db"
+DB_NAME: str = "data/sudoku_puzzles.db"
 
 
 def setup_database(db_name: str = DB_NAME) -> None:
@@ -99,6 +99,52 @@ def add_puzzles(db_name: str = DB_NAME) -> None:
 
     except sqlite3.Error as e:
         print(f"Database error adding puzzles: {e}")
+
+
+def add_puzzles_from_file(file_path: str, db_name: str = DB_NAME) -> None:
+    """Adds Sudoku puzzles from a text file to the database.
+
+    Each line in the file should contain a puzzle string followed by its
+    difficulty, separated by a comma.
+
+    Args:
+        file_path (str): The path to the text file containing puzzles.
+        db_name (str): The name of the database file. Defaults to DB_NAME.
+
+    Raises:
+        sqlite3.Error: If a database operation fails during the insertion process.
+        IOError: If there is an error reading the file.
+    """
+
+    sql: str = """
+        INSERT OR IGNORE INTO puzzles (puzzle_string, difficulty) 
+        VALUES (?, ?); 
+        """
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as file, sqlite3.connect(
+            db_name
+        ) as conn:
+            cursor = conn.cursor()
+
+            for line in file:
+                _, puzzle_str, _, difficulty = line.strip().split(" ")
+
+                difficulty = float(difficulty)
+
+                if difficulty < 1.5:
+                    difficulty = "easy"
+                elif difficulty < 2.5:
+                    difficulty = "medium"
+                else:
+                    difficulty = "hard"
+
+                cursor.execute(sql, (puzzle_str, difficulty))
+
+    except sqlite3.Error as e:
+        print(f"Database error adding puzzles from file: {e}")
+    except IOError as e:
+        print(f"File error: {e}")
 
 
 def load_puzzle_from_db(

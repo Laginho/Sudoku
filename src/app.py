@@ -1,4 +1,4 @@
-# pylint: disable=no-member, unused-import, attribute-defined-outside-init
+# pylint: disable=no-member, unused-import, attribute-defined-outside-init, protected-access
 
 """Kivy application and UI components for the Sudoku game.
 
@@ -18,6 +18,7 @@ Classes:
 """
 
 import os
+import sys
 from copy import deepcopy as copy
 
 from kivy.resources import resource_add_path
@@ -37,6 +38,18 @@ import logic
 import constants as c
 import settings as s
 import db_utils
+
+if hasattr(sys, "_MEIPASS"):
+    resource_add_path(os.path.join(sys._MEIPASS))
+    KV_FILE_PATH = os.path.join(sys._MEIPASS, "sudoku.kv")
+    DB_PATH = os.path.join(sys._MEIPASS, "data/sudoku_puzzles.db")
+    TXT_PATH = os.path.join(sys._MEIPASS, "data/puzzles.txt")
+else:
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    resource_add_path(project_root)
+    KV_FILE_PATH = "src/sudoku.kv"
+    DB_PATH = "data/sudoku_puzzles.db"
+    TXT_PATH = "data/puzzles.txt"
 
 project_root = os.path.dirname(os.path.abspath(__file__))
 resource_add_path(os.path.join(project_root, "assets"))
@@ -101,12 +114,13 @@ class SudokuApp(App):
         self.sm.add_widget(MenuScreen(name="menu"))
         self.sm.add_widget(GameScreen(name="game"))
         self.pencil_mode = False
+        self.difficulty = "Not selected"
 
         db_utils.setup_database()
-        db_utils.add_puzzles()
+        db_utils.add_puzzles_from_file(TXT_PATH)
         return self.sm
 
-    def game_start(self):
+    def game_start(self, difficulty: str):
         """Loads a new puzzle.
 
         The grid is populated with buttons corresponding to
@@ -116,7 +130,8 @@ class SudokuApp(App):
 
         # Database setup
 
-        puzzle_grid = db_utils.load_puzzle_from_db()
+        self.difficulty = difficulty
+        puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty)
 
         if not puzzle_grid:
             print("could not find a puzzle to load.")

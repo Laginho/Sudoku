@@ -19,7 +19,7 @@ from db_utils import (
 
 class TestDbUtils(unittest.TestCase):
 
-    test_db_name: str = "test_puzzles.db"
+    test_db_name: str = "data/test_puzzles.db"
 
     def setUp(self) -> None:
         setup_database(db_name=self.test_db_name)

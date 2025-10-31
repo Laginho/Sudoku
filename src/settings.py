@@ -12,6 +12,9 @@ Constants:
 """
 
 # default: 405x720
-WINDOW_SIZE: tuple[int, int] = (675, 1200)
+DEFAULT = (405, 720)
+MODE1 = (540, 960)
+MODE2 = (675, 1200)
+WINDOW_SIZE: tuple[int, int] = DEFAULT
 
 NUMBER_SIZE: int = WINDOW_SIZE[1] // 24

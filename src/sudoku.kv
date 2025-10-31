@@ -252,10 +252,22 @@
             height: '48dp'
 
             Button:
-                text: "Play"
+                text: "Easy"
                 on_release: 
                     app.root.current = 'game'
-                    app.game_start()
+                    app.game_start('easy')
+
+            Button:
+                text: "Medium"
+                on_release: 
+                    app.root.current = 'game'
+                    app.game_start('medium')
+
+            Button:
+                text: "Hard"
+                on_release: 
+                    app.root.current = 'game'
+                    app.game_start('hard')
 
             Button:
                 text: "Exit"

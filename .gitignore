@@ -52,4 +52,5 @@ coverage.xml
 docs/_build/
 
 # Project specifics
+info.txt
 *.db

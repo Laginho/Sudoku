@@ -39,6 +39,8 @@ import constants as c
 import settings as s
 import db_utils
 
+# Path handling
+
 if hasattr(sys, "_MEIPASS"):
     resource_add_path(os.path.join(sys._MEIPASS))
     KV_FILE_PATH = os.path.join(sys._MEIPASS, "sudoku.kv")
@@ -132,11 +134,12 @@ class SudokuApp(App):
 
         self.difficulty = difficulty
         puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty, db_name=DB_PATH)
+        # puzzle_grid = copy(c.EXAMPLE_BOARD)  # Debugging
         self.sm.get_screen("game").ids.difficulty_label.text = (
             self.difficulty.capitalize()
         )
 
-        if not puzzle_grid:
+        if not puzzle_grid or puzzle_grid == [[]] or puzzle_grid == [[0] * 9] * 9:
             print("could not find a puzzle to load.")
             puzzle_grid = copy(c.EXAMPLE_BOARD)
 

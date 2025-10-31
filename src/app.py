@@ -132,6 +132,9 @@ class SudokuApp(App):
 
         self.difficulty = difficulty
         puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty)
+        self.sm.get_screen("game").ids.difficulty_label.text = (
+            self.difficulty.capitalize()
+        )
 
         if not puzzle_grid:
             print("could not find a puzzle to load.")

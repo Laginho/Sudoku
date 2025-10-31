@@ -139,12 +139,19 @@
                     allow_stretch: True
                     color: c.BLACK
 
-            Label: # Spacer
-                size_hint_x: 1.0
-
             # TopNavButton:
                 # text: "S"
                 # on_release: app.open_settings()
+
+        # --- Difficulty label ---
+        Label:
+            id: difficulty_label
+            text: "hello"
+            font_size: s.WINDOW_SIZE[1] // 60
+            color: c.BLACK
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'x': 0.053, 'top': 0.875}
 
         # --- Sudoku Grid ---
         SudokuGrid:
@@ -160,7 +167,7 @@
 
             ActionButton:
                 id: pencil_button
-                pos_hint: {'center_x': 0.3, 'center_y': 0.23}
+                pos_hint: {'center_x': 0.3, 'center_y': 0.26}
                 size_hint: 0.1, 0.05625
                 on_release: app.toggle_pencil_mode()
                 Image:
@@ -172,7 +179,7 @@
 
             ActionButton:
                 id: auto_pencil
-                pos_hint: {'center_x': 0.5, 'center_y': 0.23}
+                pos_hint: {'center_x': 0.5, 'center_y': 0.26}
                 size_hint: 0.1, 0.05625
                 on_release: app.auto_pencil()
                 Image:
@@ -183,7 +190,7 @@
                     color: c.BLACK
 
             ActionButton:
-                pos_hint: {'center_x': 0.7, 'center_y': 0.23}
+                pos_hint: {'center_x': 0.7, 'center_y': 0.26}
                 size_hint: 0.1, 0.05625
                 on_release: app.reset()
                 Image:

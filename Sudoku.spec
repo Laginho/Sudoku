@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\app.py'],
     pathex=[],
     binaries=[],
-    datas=[('src/sudoku.kv', '.'), ('data/sudoku_puzzles.db', '.'), ('assets', 'assets'), ('data/puzzles.txt', 'data')],
+    datas=[('src/sudoku.kv', 'src'), ('data/sudoku_puzzles.db', 'data'), ('data/puzzles.txt', 'data'), ('assets', 'assets')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

@@ -3,7 +3,7 @@
 """Kivy application and UI components for the Sudoku game.
 
 This module contains the main :class:`SudokuApp` application class and a few
-lightweight widget subclasses that are referenced from ``sudoku.kv``.
+lightweight widget subclasses that are referenced from ``layout.kv``.
 
 The application is responsible for loading puzzles from the database,
 instantiating the :class:`Board`, wiring UI callbacks and showing the win
@@ -25,7 +25,6 @@ from kivy.resources import resource_add_path
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
-from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -41,13 +40,13 @@ import db_utils
 
 if hasattr(sys, "_MEIPASS"):
     resource_add_path(os.path.join(sys._MEIPASS))
-    KV_FILE_PATH = os.path.join(sys._MEIPASS, "sudoku.kv")
+    KV_FILE_PATH = os.path.join(sys._MEIPASS, "layout.kv")
     DB_PATH = os.path.join(sys._MEIPASS, "data/sudoku_puzzles.db")
     TXT_PATH = os.path.join(sys._MEIPASS, "data/puzzles.txt")
 else:
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     resource_add_path(project_root)
-    KV_FILE_PATH = "src/sudoku.kv"
+    KV_FILE_PATH = "src/layout.kv"
     DB_PATH = "data/sudoku_puzzles.db"
     TXT_PATH = "data/puzzles.txt"
 
@@ -55,6 +54,7 @@ project_root = os.path.dirname(os.path.abspath(__file__))
 resource_add_path(os.path.join(project_root, "assets"))
 Window.size = s.WINDOW_SIZE
 Window.clearcolor = c.DEFAULT
+Builder.load_file(KV_FILE_PATH)
 
 
 class GameScreen(Screen):
@@ -130,6 +130,7 @@ class SudokuApp(App):
 
         # Database setup
 
+        print(f"Loading a {difficulty} puzzle...")
         self.difficulty = difficulty
         puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty, db_name=DB_PATH)
         # puzzle_grid = copy(c.EXAMPLE_BOARD)  # Debugging
@@ -352,6 +353,8 @@ class SudokuApp(App):
         for i in range(9):
             for j in range(9):
                 if (i, j) in self.board.initial_cells:
+                    continue
+                if self.board.state[i][j] != 0:
                     continue
 
                 self.selected_grid = (i, j)

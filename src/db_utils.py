@@ -173,7 +173,7 @@ def load_puzzle_from_db(
     puzzle_grid = [[]]
 
     try:
-        with sqlite3.connect(db_name) as conn:
+        with sqlite3.connect(f"file:{db_name}?mode=ro", uri=True) as conn:
             cursor = conn.cursor()
             cursor.execute(sql, (difficulty,))
             result = cursor.fetchone()

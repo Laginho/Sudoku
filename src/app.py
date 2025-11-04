@@ -36,25 +36,34 @@ import constants as c
 import settings as s
 import db_utils
 
-# Path handling
+# Path handling for Windows & PyInstaller
 
-if hasattr(sys, "_MEIPASS"):
-    resource_add_path(os.path.join(sys._MEIPASS))
-    KV_FILE_PATH = os.path.join(sys._MEIPASS, "layout.kv")
-    DB_PATH = os.path.join(sys._MEIPASS, "data/sudoku_puzzles.db")
-    TXT_PATH = os.path.join(sys._MEIPASS, "data/puzzles.txt")
-else:
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    resource_add_path(project_root)
-    KV_FILE_PATH = "src/layout.kv"
-    DB_PATH = "data/sudoku_puzzles.db"
-    TXT_PATH = "data/puzzles.txt"
+# if hasattr(sys, "_MEIPASS"):
+#     resource_add_path(os.path.join(sys._MEIPASS))
+#     KV_FILE_PATH = os.path.join(sys._MEIPASS, "layout.kv")
+#     DB_PATH = os.path.join(sys._MEIPASS, "data/sudoku_puzzles.db")
+#     TXT_PATH = os.path.join(sys._MEIPASS, "data/puzzles.txt")
+# else:
+#     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+#     resource_add_path(project_root)
+#     KV_FILE_PATH = "src/layout.kv"
+#     DB_PATH = "data/sudoku_puzzles.db"
+#     TXT_PATH = "data/puzzles.txt"
 
-project_root = os.path.dirname(os.path.abspath(__file__))
-resource_add_path(os.path.join(project_root, "assets"))
+# project_root = os.path.dirname(os.path.abspath(__file__))
+# resource_add_path(os.path.join(project_root, "assets"))
+# Builder.load_file(KV_FILE_PATH)
+
+# Path handling for Android & Buildozer
+
+Builder.load_file("layout.kv")
+DB_PATH = db_utils.get_db_path()
+TXT_PATH = db_utils.get_txt_path()
+
+# Kivy Window setup
+
 Window.size = s.WINDOW_SIZE
 Window.clearcolor = c.DEFAULT
-Builder.load_file(KV_FILE_PATH)
 
 
 class GameScreen(Screen):

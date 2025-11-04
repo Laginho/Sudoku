@@ -9,14 +9,34 @@ Functions:
     load_puzzle_from_db: Load a random puzzle for a given difficulty.
 """
 
+import sys
+import os
 import sqlite3
+from kivy.app import App
 
 from utils import parse_puzzle_string
 
-DB_NAME: str = "data/sudoku_puzzles.db"
+
+def get_db_path() -> str:
+    """Returns the absolute path to the database file.
+
+    Returns:
+        The database path as a string.
+    """
+
+    app_dir = App.get_running_app().user_data_dir
+    return os.path.join(app_dir, "sudoku_puzzles.db")
 
 
-def setup_database(db_name: str = DB_NAME) -> None:
+def get_txt_path():
+    """Returns the absolute path to the puzzles.txt file."""
+
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "data", "puzzles.txt"
+    )
+
+
+def setup_database(db_name: str) -> None:
     """Creates the table in the database if it doesn't already exist.
 
     It's kind of overkill for this game, but it is more of an excuse for
@@ -45,7 +65,7 @@ def setup_database(db_name: str = DB_NAME) -> None:
         print(f"Database error during setup: {e}")
 
 
-def add_puzzles(db_name: str = DB_NAME) -> None:
+def add_puzzles(db_name: str) -> None:
     """Adds a predefined list of Sudoku puzzles to the database
 
     Honorable mention to INSERT OR IGNORE, meaning puzzles that already exist
@@ -101,7 +121,7 @@ def add_puzzles(db_name: str = DB_NAME) -> None:
         print(f"Database error adding puzzles: {e}")
 
 
-def add_puzzles_from_file(file_path: str, db_name: str = DB_NAME) -> None:
+def add_puzzles_from_file(file_path: str, db_name: str) -> None:
     """Adds Sudoku puzzles from a text file to the database.
 
     Each line in the file should contain a puzzle string followed by its
@@ -147,9 +167,7 @@ def add_puzzles_from_file(file_path: str, db_name: str = DB_NAME) -> None:
         print(f"File error: {e}")
 
 
-def load_puzzle_from_db(
-    difficulty: str = "easy", db_name: str = DB_NAME
-) -> list[list[int]]:
+def load_puzzle_from_db(difficulty: str, db_name: str) -> list[list[int]]:
     """Loads a random puzzle from the database with the specified difficulty.
 
     Args:
@@ -165,6 +183,8 @@ def load_puzzle_from_db(
     Raises:
         sqlite3.Error: If a database operation fails during the query process.
     """
+
+    db_name = db_name if db_name else get_db_path()
 
     sql: str = """
         SELECT puzzle_string FROM puzzles 

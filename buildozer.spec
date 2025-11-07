@@ -12,8 +12,11 @@ package.domain = org.test
 # (str) Source code where the main.py live
 source.dir = src
 
+# (list) List of inclusions using pattern matching
+source.include_patterns = assets/*, data/*, src/*.py, src/*.kv
+
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py, kv, db, txt, png, ico
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -47,7 +50,7 @@ requirements = kivy,sqlite3
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
-icon.filename = %(source.dir)s/assets/game.ico
+icon.filename = assets/game.ico
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse

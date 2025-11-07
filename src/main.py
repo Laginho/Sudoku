@@ -21,7 +21,6 @@ import os
 import sys
 from copy import deepcopy as copy
 
-from kivy.resources import resource_add_path
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
@@ -29,6 +28,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.graphics import Color, Rectangle, RoundedRectangle
+from kivy.resources import resource_add_path
 
 from board import Board
 import logic
@@ -56,13 +56,19 @@ import db_utils
 
 # Path handling for Android & Buildozer
 
-Builder.load_file("layout.kv")
-DB_PATH = db_utils.get_db_path()
-TXT_PATH = db_utils.get_txt_path()
+if "ANDROID_ARGUMENT" in os.environ:
+    base_path = os.getcwd()
+else:
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+resource_add_path(base_path)
+
+kv_file_path = os.path.join(base_path, "src", "layout.kv")
+Builder.load_file(kv_file_path)
 
 # Kivy Window setup
 
-Window.size = s.WINDOW_SIZE
+# Window.size = (1080, 1920)
 Window.clearcolor = c.DEFAULT
 
 
@@ -119,14 +125,19 @@ class SudokuApp(App):
             ScreenManager: The root widget of the application.
         """
 
+        self.db_path = db_utils.get_db_path()
+        self.txt_path = db_utils.get_txt_path()
+
+        # if not os.path.exists(self.db_path):
+        #     db_utils.setup_database(db_name=self.db_path)
+        #     db_utils.add_puzzles_from_file(self.txt_path, db_name=self.db_path)
+
         self.sm = ScreenManager()
         self.sm.add_widget(MenuScreen(name="menu"))
         self.sm.add_widget(GameScreen(name="game"))
         self.pencil_mode = False
         self.difficulty = "Not selected"
 
-        # db_utils.setup_database(db_name=DB_PATH)
-        # db_utils.add_puzzles_from_file(TXT_PATH, db_name=DB_PATH)
         return self.sm
 
     def game_start(self, difficulty: str):
@@ -141,7 +152,9 @@ class SudokuApp(App):
 
         print(f"Loading a {difficulty} puzzle...")
         self.difficulty = difficulty
-        puzzle_grid = db_utils.load_puzzle_from_db(self.difficulty, db_name=DB_PATH)
+        puzzle_grid = db_utils.load_puzzle_from_db(
+            self.difficulty, db_name=self.db_path
+        )
         # puzzle_grid = copy(c.EXAMPLE_BOARD)  # Debugging
         self.sm.get_screen("game").ids.difficulty_label.text = (
             self.difficulty.capitalize()
@@ -194,14 +207,15 @@ class SudokuApp(App):
         number_palette.clear_widgets()
         for i in range(1, 10):
             number_button = NumberButton(text=str(i), font_size=s.NUMBER_SIZE)
+            number_button.size = (s.NUMBER_SIZE // 2, s.NUMBER_SIZE)
             number_button.bind(on_press=self.on_number_press)
             number_palette.add_widget(number_button)
-            number_button.size_hint = (1, 1)
+            number_button.size_hint = (1, 1.5)
 
         clear_button = NumberButton(text="C", font_size=s.NUMBER_SIZE)
         clear_button.bind(on_press=self.on_number_press)
         number_palette.add_widget(clear_button)
-        clear_button.size_hint = (1, 1)
+        clear_button.size_hint = (1, 1.5)
 
     def on_cell_press(self, button: NumberButton):
         """Handles the pressing of a cell button on the Sudoku grid.

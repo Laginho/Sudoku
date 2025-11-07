@@ -9,10 +9,10 @@ Functions:
     load_puzzle_from_db: Load a random puzzle for a given difficulty.
 """
 
-import sys
 import os
 import sqlite3
 from kivy.app import App
+from kivy.resources import resource_find
 
 from utils import parse_puzzle_string
 
@@ -24,6 +24,12 @@ def get_db_path() -> str:
         The database path as a string.
     """
 
+    # Try on Android
+    res = resource_find("sudoku_puzzles.db")
+    if res:
+        return res
+
+    # Fallback for PC
     app_dir = App.get_running_app().user_data_dir
     return os.path.join(app_dir, "sudoku_puzzles.db")
 
@@ -31,6 +37,12 @@ def get_db_path() -> str:
 def get_txt_path():
     """Returns the absolute path to the puzzles.txt file."""
 
+    # Try on Android
+    res = resource_find("puzzles.txt")
+    if res:
+        return res
+
+    # Fallback for PC
     return os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "..", "data", "puzzles.txt"
     )

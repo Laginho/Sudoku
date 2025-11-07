@@ -74,13 +74,13 @@
             rectangle: (self.x + 3, self.y + 3, self.width - 6, self.height - 5)
 
 <SudokuCell@Button>:
-    font_size: s.WINDOW_SIZE[1] // 24
+    font_size: '30sp'
     background_normal: ''
     background_color: c.WHITE
     color: c.BLACK
 
 <NumberButton@Button>:
-    font_size: s.WINDOW_SIZE[1] // 36
+    font_size: '22sp'
     background_normal: ''
     background_color: (0, 0, 0, 0)
     color: c.BLUE
@@ -147,7 +147,7 @@
         Label:
             id: difficulty_label
             text: ""
-            font_size: s.WINDOW_SIZE[1] // 60
+            font_size: '20sp'
             color: c.BLACK
             size_hint: None, None
             size: self.texture_size
@@ -173,7 +173,7 @@
                 Image:
                     source: 'assets/pencil.png'
                     center: self.parent.center
-                    size: s.WINDOW_SIZE[1] // 24, s.WINDOW_SIZE[1] // 24
+                    size: sp(30), sp(30)
                     allow_stretch: True
                     color: c.BLACK
 
@@ -185,7 +185,7 @@
                 Image:
                     source: 'assets/auto_pencil.png'
                     center: self.parent.center
-                    size: s.WINDOW_SIZE[1] // 18, s.WINDOW_SIZE[1] // 18
+                    size: sp(40), sp(40)
                     allow_stretch: True
                     color: c.BLACK
 
@@ -196,7 +196,7 @@
                 Image:
                     source: 'assets/reset.png'
                     center: self.parent.center
-                    size: s.WINDOW_SIZE[1] // 18, s.WINDOW_SIZE[1] // 18
+                    size: sp(40), sp(40)
                     allow_stretch: True
                     color: c.BLACK
 
